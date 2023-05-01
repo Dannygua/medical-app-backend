@@ -1,55 +1,42 @@
-import generarId from "../helpers/generarId.js";
-import generarJWT from "../helpers/generarJWT.js";
-import Usuario from "../models/Usuario.js";
+import createId from "../helpers/createId.js";
+import createJWT from "../helpers/createJWT.js";
+import { emailForgetPassword } from "../helpers/emails.js";
+import User from "../models/Users.js";
 
-const registrar = async (req, res) => {
-  //Evitar registros duplicados
+const register = async (req, res) => {
   const { email } = req.body;
-  const uno = 0;
 
-  const existeUsuario = await Usuario.findOne({ email: email });
+  const UserExist = await User.findOne({ email: email });
 
-  if (existeUsuario) {
+  if (UserExist) {
     const error = new Error("Usuario ya registrado");
     return res.status(400).json({ msg: error.message });
   }
 
   try {
-    const usuario = new Usuario(req.body);
-    usuario.token = generarId();
-    await usuario.save();
-
-    // //Enviar email de confirmacion
-    // emailRegistro({
-    //   email: usuario.email,
-    //   nombre: usuario.nombre,
-    //   token: usuario.token,
-    // });
-
-    res.json({ msg: "Usuario creado Correctamente" });
+    const user = new User(req.body);
+    user.token = "";
+    await user.save();
+    res.status(200).json({ msg: "Usuario creado Correctamente" });
   } catch (error) {
     console.log(error);
   }
 };
 
-const autenticar = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
-  const usuario = await Usuario.findOne({ email });
-  if (!usuario) {
+  const user = await User.findOne({ email });
+  if (!user) {
     const error = new Error("El usuario no existe");
     return res.status(400).json({ msg: error.message });
   }
-  //   if (!usuario.confirmado) {
-  //     const error = new Error("Tu cuenta no ha sido confirmada");
-  //     return res.status(403).json({ msg: error.message });
-  //   }
 
-  if (await usuario.comprobarPassword(password)) {
+  if (await user.comprobarPassword(password)) {
     res.json({
-      _id: usuario._id,
-      nombre: usuario.nombre,
-      email: usuario.email,
-      token: generarJWT(usuario._id),
+      _id: user._id,
+      firstname: user.firstname,
+      email: user.email,
+      token: createJWT(user._id),
     });
   } else {
     const error = new Error("El password es incorrecto");
@@ -57,4 +44,61 @@ const autenticar = async (req, res) => {
   }
 };
 
-export { autenticar, registrar };
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    const error = new Error("El usuario no existe");
+    return res.status(400).json({ msg: error.message });
+  }
+
+  try {
+    user.token = createId();
+    await user.save();
+    emailForgetPassword({
+      email: user.email,
+      firstname: user.firstname,
+      token: user.token,
+    });
+    res.status(200).json({
+      msg: "Hemos enviado un email a su correo con las istrucciones para recuperar su contraseña",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const findoutToken = async (req, res) => {
+  const { token } = req.params;
+  const ValidToken = await User.findOne({ token });
+  if (ValidToken) {
+    res.status(200).json({ msg: "Token valido y el usuario existe" });
+  } else {
+    const error = new Error("Token no valido");
+    return res.status(400).json({ msg: error.message });
+  }
+};
+
+const NewPassword = async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const user = await User.findOne({ token });
+  if (user) {
+    try {
+      user.password = password;
+      user.token = "";
+
+      await user.save();
+      res.json({ msg: "Contraseña Modificado Correctamente" });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    const error = new Error("Token no valido");
+    return res.status(400).json({ msg: error.message });
+  }
+};
+
+export { register, login, forgetPassword, findoutToken, NewPassword };
