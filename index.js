@@ -12,17 +12,18 @@ conectarDB();
 
 const whitelist = [process.env.FRONTEND_URL];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Error de Cors"));
-    }
-  },
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
 
-app.use(cors(corsOptions));
+//     if (whitelist.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Error de Cors"));
+//     }
+//   },
+// };
+
+// app.use(cors(corsOptions));
 
 app.use("/api/usuarios", usuarioRoutes);
 
