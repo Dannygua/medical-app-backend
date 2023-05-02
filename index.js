@@ -10,7 +10,7 @@ app.use(express.json());
 
 conectarDB();
 
-const whitelist = [process.env.FRONTEND_URL];
+const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL_LOCAL];
 
 const corsOptions = {
   origin: function (origin, callback) {
