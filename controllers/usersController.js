@@ -4,21 +4,7 @@ import { emailForgetPassword } from "../helpers/emails.js";
 import User from "../models/Users.js";
 
 const register = async (req, res) => {
-  const { email, isPatient, profile } = req.body;
-  const {
-    bornDate,
-    address,
-    bornPlace,
-    ci,
-    civilState,
-    height,
-    imc,
-    ocupation,
-    phone,
-    profession,
-    referredBy,
-    weight,
-  } = profile;
+  const { email, isPatient, isDoctor, profile } = req.body;
 
   const UserExist = await User.findOne({ email: email });
 
@@ -31,18 +17,18 @@ const register = async (req, res) => {
     const AutoPassword = createId();
     if (isPatient) {
       if (
-        address &&
-        bornPlace
-        // bornDate &&
-        // ci &&
-        // civilState &&
-        // height &&
-        // imc &&
-        // ocupation &&
-        // phone &&
-        // profession &&
-        // referredBy &&
-        // weight
+        profile?.address &&
+        profile?.bornPlace &&
+        profile?.bornDate &&
+        profile?.ci &&
+        profile?.civilState &&
+        profile?.height &&
+        profile?.imc &&
+        profile?.ocupation &&
+        profile?.phone &&
+        profile?.profession &&
+        profile?.referredBy &&
+        profile?.weight
       ) {
         const user = new User(req.body);
         user.password = AutoPassword;
@@ -52,7 +38,7 @@ const register = async (req, res) => {
         const error = new Error("Todos los datos son requeridos");
         return res.status(400).json({ msg: error.message });
       }
-    } else {
+    } else if (isDoctor) {
       const user = new User(req.body);
       user.profile = null;
       user.token = "";
