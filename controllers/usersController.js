@@ -1,6 +1,6 @@
 import createId from "../helpers/createId.js";
 import createJWT from "../helpers/createJWT.js";
-import { emailForgetPassword } from "../helpers/emails.js";
+import { emailCredentials, emailForgetPassword } from "../helpers/emails.js";
 import User from "../models/Users.js";
 
 const register = async (req, res) => {
@@ -33,7 +33,13 @@ const register = async (req, res) => {
         const user = new User(req.body);
         user.password = AutoPassword;
         user.token = "";
+
         await user.save();
+        emailCredentials({
+          firstname: user.firstname,
+          email: user.email,
+          password: AutoPassword,
+        });
       } else {
         const error = new Error("Todos los datos son requeridos");
         return res.status(400).json({ msg: error.message });
