@@ -28,22 +28,24 @@ const register = async (req, res) => {
   }
 
   try {
+    const AutoPassword = createId();
     if (isPatient) {
       if (
-        bornDate &&
         address &&
-        bornPlace &&
-        ci &&
-        civilState &&
-        height &&
-        imc &&
-        ocupation &&
-        phone &&
-        profession &&
-        referredBy &&
-        weight
+        bornPlace
+        // bornDate &&
+        // ci &&
+        // civilState &&
+        // height &&
+        // imc &&
+        // ocupation &&
+        // phone &&
+        // profession &&
+        // referredBy &&
+        // weight
       ) {
         const user = new User(req.body);
+        user.password = AutoPassword;
         user.token = "";
         await user.save();
       } else {
@@ -56,7 +58,9 @@ const register = async (req, res) => {
       user.token = "";
       await user.save();
     }
-    res.status(200).json({ msg: "Usuario creado Correctamente" });
+    res
+      .status(200)
+      .json({ msg: "Usuario creado Correctamente", password: AutoPassword });
   } catch (error) {
     console.log(error.message);
   }
