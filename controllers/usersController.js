@@ -4,7 +4,21 @@ import { emailForgetPassword } from "../helpers/emails.js";
 import User from "../models/Users.js";
 
 const register = async (req, res) => {
-  const { email } = req.body;
+  const { email, isPatient, profile } = req.body;
+  const {
+    bornDate,
+    address,
+    bornPlace,
+    ci,
+    civilState,
+    height,
+    imc,
+    ocupation,
+    phone,
+    profession,
+    referredBy,
+    weight,
+  } = profile;
 
   const UserExist = await User.findOne({ email: email });
 
@@ -14,12 +28,37 @@ const register = async (req, res) => {
   }
 
   try {
-    const user = new User(req.body);
-    user.token = "";
-    await user.save();
+    if (isPatient) {
+      if (
+        bornDate &&
+        address &&
+        bornPlace &&
+        ci &&
+        civilState &&
+        height &&
+        imc &&
+        ocupation &&
+        phone &&
+        profession &&
+        referredBy &&
+        weight
+      ) {
+        const user = new User(req.body);
+        user.token = "";
+        await user.save();
+      } else {
+        const error = new Error("Todos los datos son requeridos");
+        return res.status(400).json({ msg: error.message });
+      }
+    } else {
+      const user = new User(req.body);
+      user.profile = null;
+      user.token = "";
+      await user.save();
+    }
     res.status(200).json({ msg: "Usuario creado Correctamente" });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
 

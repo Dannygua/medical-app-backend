@@ -31,24 +31,87 @@ const UserSchema = mongoose.Schema(
     },
     isDoctor: {
       type: Boolean,
-      default: false,
+      trim: true,
     },
     isPatient: {
       type: Boolean,
-      default: false,
+      trim: true,
     },
     isPychologist: {
       type: Boolean,
-      default: false,
+      trim: true,
     },
     isNutri: {
       type: Boolean,
-      default: false,
+      trim: true,
     },
     token: {
       type: String,
     },
+
+    token: {
+      type: String,
+    },
+    profile: [
+      {
+        bornDate: {
+          type: Date,
+          trim: true,
+        },
+        address: {
+          type: String,
+          validate: {
+            validator: function () {
+              return this.isPatient != true && this.address != null;
+            },
+            message: "Direccion requerida",
+          },
+          trim: true,
+        },
+        bornPlace: {
+          type: String,
+          trim: true,
+        },
+        ci: {
+          type: String,
+          trim: true,
+        },
+        civilState: {
+          type: String,
+          trim: true,
+        },
+        height: {
+          type: Number,
+          trim: true,
+        },
+        imc: {
+          type: Number,
+          trim: true,
+        },
+        ocupation: {
+          type: String,
+          trim: true,
+        },
+        phone: {
+          type: Number,
+          trim: true,
+        },
+        profession: {
+          type: String,
+          trim: true,
+        },
+        referredBy: {
+          type: String,
+          trim: true,
+        },
+        weight: {
+          type: Number,
+          trim: true,
+        },
+      },
+    ],
   },
+
   {
     timestamps: true,
   }
