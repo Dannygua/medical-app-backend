@@ -5,50 +5,49 @@ const UserSchema = mongoose.Schema(
   {
     firstname: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
     lastname: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
     password: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
     },
     email: {
       type: String,
-      require: true,
+      required: true,
       trim: true,
       unique: true,
     },
     bornDate: {
       type: Date,
-      require: true,
       trim: true,
     },
     isDoctor: {
       type: Boolean,
       trim: true,
+      default: false,
     },
     isPatient: {
       type: Boolean,
       trim: true,
+      default: false,
     },
     isPychologist: {
       type: Boolean,
       trim: true,
+      default: false,
     },
     isNutri: {
       type: Boolean,
       trim: true,
+      default: false,
     },
-    token: {
-      type: String,
-    },
-
     token: {
       type: String,
     },
