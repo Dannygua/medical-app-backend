@@ -10,7 +10,7 @@ const register = async (req, res) => {
 
   if (UserExist) {
     const error = new Error("Usuario ya registrado");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 
   try {
@@ -42,7 +42,7 @@ const register = async (req, res) => {
         });
       } else {
         const error = new Error("Todos los datos son requeridos");
-        return res.status(400).json({ msg: error.message });
+        return res.status(400).json({ msg: error.message, status: false });
       }
     } else if (isDoctor) {
       const user = new User(req.body);
@@ -52,9 +52,10 @@ const register = async (req, res) => {
     }
     res
       .status(200)
-      .json({ msg: "Usuario creado Correctamente", password: AutoPassword });
+      .json({ msg: "Usuario creado Correctamente", status: true });
   } catch (error) {
     console.log(error.message);
+    res.status(400).json({ msg: error.message, status: false })
   }
 };
 
@@ -69,9 +70,12 @@ const login = async (req, res) => {
   if (await user.comprobarPassword(password)) {
     res.json({
       _id: user._id,
-      firstname: user.firstname,
-      email: user.email,
       token: createJWT(user._id),
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      isPatient: user.isPatient, 
+      isDoctor: user.isDoctor
     });
   } else {
     const error = new Error("El password es incorrecto");
@@ -136,4 +140,15 @@ const NewPassword = async (req, res) => {
   }
 };
 
-export { register, login, forgetPassword, findoutToken, NewPassword };
+
+const getPatients = async (req, res) => {
+  try{
+   const patients = await User.find({ isPatient: true });
+   res.status(200).json({ data: patients, status: true })
+  }catch(error){
+    res.status(400).json({ msg: error.message, status: false })
+  }
+}
+
+
+export { register, login, forgetPassword, findoutToken, NewPassword, getPatients };
