@@ -24,10 +24,6 @@ const UserSchema = mongoose.Schema(
       trim: true,
       unique: true,
     },
-    bornDate: {
-      type: Date,
-      trim: true,
-    },
     isDoctor: {
       type: Boolean,
       trim: true,
@@ -48,69 +44,22 @@ const UserSchema = mongoose.Schema(
       trim: true,
       default: false,
     },
+    records: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Record",
+      },
+    ],
+    patients: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Usuarios",
+      },
+    ],
     token: {
       type: String,
     },
-    profile: [
-      {
-        bornDate: {
-          type: Date,
-          trim: true,
-        },
-        address: {
-          type: String,
-          validate: {
-            validator: function () {
-              return this.isPatient != true && this.address != null;
-            },
-            message: "Direccion requerida",
-          },
-          trim: true,
-        },
-        bornPlace: {
-          type: String,
-          trim: true,
-        },
-        ci: {
-          type: String,
-          trim: true,
-        },
-        civilState: {
-          type: String,
-          trim: true,
-        },
-        height: {
-          type: Number,
-          trim: true,
-        },
-        imc: {
-          type: Number,
-          trim: true,
-        },
-        ocupation: {
-          type: String,
-          trim: true,
-        },
-        phone: {
-          type: Number,
-          trim: true,
-        },
-        profession: {
-          type: String,
-          trim: true,
-        },
-        referredBy: {
-          type: String,
-          trim: true,
-        },
-        weight: {
-          type: Number,
-          trim: true,
-        },
-      },
-    ],
   },
-
   {
     timestamps: true,
   }
@@ -128,6 +77,6 @@ UserSchema.methods.comprobarPassword = async function (passwordFormulario) {
   return await bcrypt.compare(passwordFormulario, this.password);
 };
 
-const User = mongoose.model("Usuario", UserSchema);
+const User = mongoose.model("Usuarios", UserSchema);
 
 export default User;

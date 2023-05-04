@@ -3,8 +3,8 @@ import createJWT from "../helpers/createJWT.js";
 import { emailCredentials, emailForgetPassword } from "../helpers/emails.js";
 import User from "../models/Users.js";
 
-const register = async (req, res) => {
-  const { email, isPatient, isDoctor, profile } = req.body;
+const registerPatients = async (req, res) => {
+  const { email, isPychologist, isDoctor, isNutri, isPatient } = req.body;
 
   const UserExist = await User.findOne({ email: email });
 
@@ -14,48 +14,123 @@ const register = async (req, res) => {
   }
 
   try {
-    const AutoPassword = createId();
-    if (isPatient) {
-      if (
-        profile?.address &&
-        profile?.bornPlace &&
-        profile?.bornDate &&
-        profile?.ci &&
-        profile?.civilState &&
-        profile?.height &&
-        profile?.imc &&
-        profile?.ocupation &&
-        profile?.phone &&
-        profile?.profession &&
-        profile?.referredBy &&
-        profile?.weight
-      ) {
-        const user = new User(req.body);
-        user.password = AutoPassword;
-        user.token = "";
-
-        await user.save();
-        emailCredentials({
-          firstname: user.firstname,
-          email: user.email,
-          password: AutoPassword,
-        });
-      } else {
-        const error = new Error("Todos los datos son requeridos");
-        return res.status(400).json({ msg: error.message, status: false });
-      }
-    } else if (isDoctor) {
+    if (isDoctor || isPychologist || isNutri || !isPatient) {
+      const error = new Error("El usuario debe ser un Paciente");
+      return res.status(400).json({ msg: error.message, status: false });
+    } else {
       const user = new User(req.body);
-      user.profile = null;
+      user.token = "";
+      await user.save();
+
+      emailCredentials({
+        firstname: user.firstname,
+        email: user.email,
+      });
+    }
+    res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+const registerDoctors = async (req, res) => {
+  const { email, isPatient, isPychologist, isNutri, isDoctor } = req.body;
+
+  const UserExist = await User.findOne({ email: email });
+
+  if (UserExist) {
+    const error = new Error("Usuario ya registrado");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    if (isPatient || isPychologist || isNutri || !isDoctor) {
+      const error = new Error("El usuario debe ser un Doctor");
+      return res.status(400).json({ msg: error.message, status: false });
+    } else {
+      const user = new User(req.body);
       user.token = "";
       await user.save();
     }
-    res
-      .status(200)
-      .json({ msg: "Usuario creado Correctamente", status: true });
+    res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
   } catch (error) {
     console.log(error.message);
-    res.status(400).json({ msg: error.message, status: false })
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+const editUsers = async (req, res) => {
+  const { id } = req.params;
+  const { user } = req;
+  try {
+    const userExist = await User.findById(id);
+
+    if (!userExist) {
+      const error = new Error("Usuario no encontrado");
+      return res.status(401).json({ msg: error.message });
+    }
+    if (!user.isDoctor) {
+      const error = new Error("Usuario no autorizado para esta accion");
+      return res.status(400).json({ msg: error.message, status: false });
+    } else {
+      userExist.firstname = req.body.firstname || userExist.firstname;
+      userExist.lastname = req.body.lastname || userExist.lastname;
+      const userstored = await userExist.save();
+      res.status(200).json({ msg: userstored, status: true });
+    }
+  } catch (error) {
+    res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
+
+const editProfile = async (req, res) => {
+  const { user } = req;
+  try {
+    const userExist = await User.findById(user._id);
+
+    if (!userExist) {
+      const error = new Error("Usuario no encontrado");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
+    if (user.isPatient) {
+      const error = new Error("Usuario no autorizado para esta accion");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
+    userExist.firstname = req.body.firstname || userExist.firstname;
+    userExist.lastname = req.body.lastname || userExist.lastname;
+    const userstored = await userExist.save();
+    res.status(200).json({ msg: userstored, status: true });
+  } catch (error) {
+    res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
+
+const registerNutri = async (req, res) => {
+  const { email, isPatient, isPychologist, isNutri, isDoctor } = req.body;
+
+  const UserExist = await User.findOne({ email: email });
+
+  if (UserExist) {
+    const error = new Error("Usuario ya registrado");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    if (isPatient || isPychologist || !isNutri || isDoctor) {
+      const error = new Error("El usuario debe ser un Nutriologo");
+      return res.status(400).json({ msg: error.message, status: false });
+    } else {
+      const user = new User(req.body);
+      user.token = "";
+      await user.save();
+    }
+    res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ msg: error.message, status: false });
   }
 };
 
@@ -74,8 +149,8 @@ const login = async (req, res) => {
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
-      isPatient: user.isPatient, 
-      isDoctor: user.isDoctor
+      isPatient: user.isPatient,
+      isDoctor: user.isDoctor,
     });
   } else {
     const error = new Error("El password es incorrecto");
@@ -140,15 +215,38 @@ const NewPassword = async (req, res) => {
   }
 };
 
-
 const getPatients = async (req, res) => {
-  try{
-   const patients = await User.find({ isPatient: true });
-   res.status(200).json({ data: patients, status: true })
-  }catch(error){
-    res.status(400).json({ msg: error.message, status: false })
+  const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
   }
-}
 
+  try {
+    const patients = await User.find({ isPatient: true });
+    res.status(200).json({ data: patients, status: true });
+    console.log(patients);
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
 
-export { register, login, forgetPassword, findoutToken, NewPassword, getPatients };
+const profile = async (req, res) => {
+  const { user } = req;
+  res.status(200).json({ data: user, status: true });
+};
+
+export {
+  registerPatients,
+  registerDoctors,
+  login,
+  forgetPassword,
+  findoutToken,
+  NewPassword,
+  getPatients,
+  registerNutri,
+  profile,
+  editUsers,
+  editProfile,
+};
