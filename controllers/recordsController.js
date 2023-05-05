@@ -1,8 +1,9 @@
+import DateModel from "../models/Dates.js";
 import Record from "../models/MedicalRecords.js";
 import User from "../models/Users.js";
 
 const createRecord = async (req, res) => {
-  const { idpatient, idespecialist } = req.body;
+  const { idpatient, idespecialist, iddate } = req.body;
 
   try {
     const existPatient = await User.find({
@@ -23,13 +24,20 @@ const createRecord = async (req, res) => {
       const error = new Error("Especialista no registrado");
       return res.status(400).json({ msg: error.message, status: false });
     }
+
+    const existDate = await DateModel.find({
+      _id: iddate
+    })
+
+    if (!existDate[0]) {
+      const error = new Error("Cita no registrada");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
     const record = new Record(req.body);
     await record.save();
-    existPatient[0].records.push(record._id);
-    await existPatient[0].save();
-
-    existEspecialist[0].patients.push(existPatient[0]._id);
-    await existEspecialist[0].save();
+    existDate[0].record = record._id;
+    await existDate[0].save();
 
     res
       .status(200)

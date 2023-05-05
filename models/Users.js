@@ -44,10 +44,10 @@ const UserSchema = mongoose.Schema(
       trim: true,
       default: false,
     },
-    records: [
+    dates: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Record",
+        ref: "Dates",
       },
     ],
     patients: [

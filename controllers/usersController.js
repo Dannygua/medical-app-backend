@@ -151,6 +151,7 @@ const login = async (req, res) => {
       email: user.email,
       isPatient: user.isPatient,
       isDoctor: user.isDoctor,
+      dates: user.dates || []
     });
   } else {
     const error = new Error("El password es incorrecto");
@@ -232,6 +233,22 @@ const getPatients = async (req, res) => {
   }
 };
 
+
+const getSpecialists = async (req, res) => {
+  const { user } = req;
+  try {
+    if(!user.dates || user.dates.length === 0){
+      const specialists = await User.find({ isDoctor: true });    
+      res.status(200).json({ data: specialists, status: true });
+    }else if(user.dates.length > 0) {
+      const specialists = await User.find({ $or: [{ isDoctor: true }, { isNutri: true }, { isPychologist: true }] });    
+      res.status(200).json({ data: specialists, status: true });
+    }
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 const profile = async (req, res) => {
   const { user } = req;
   res.status(200).json({ data: user, status: true });
@@ -245,6 +262,7 @@ export {
   findoutToken,
   NewPassword,
   getPatients,
+  getSpecialists,
   registerNutri,
   profile,
   editUsers,

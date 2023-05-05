@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const RecordSchema = mongoose.Schema(
   {
+    iddate: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Dates",
+      required: true
+    },
     isMain: {
       type: Boolean,
       trim: true,

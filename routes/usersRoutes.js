@@ -11,6 +11,7 @@ import {
   profile,
   editUsers,
   editProfile,
+  getSpecialists,
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -24,6 +25,7 @@ router.post("/login", login);
 router.post("/forget-password", forgetPassword);
 router.route("/forget-password/:token").get(findoutToken).post(NewPassword);
 router.get("/patients", checkAuth, getPatients);
+router.get("/specialists", checkAuth, getSpecialists);
 router.put("/:id", checkAuth, editUsers);
 
 export default router;

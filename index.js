@@ -3,6 +3,7 @@ import conectarDB from "./config/bd.js";
 import dotenv from "dotenv";
 import userRoutes from "./routes/usersRoutes.js";
 import recordRoutes from "./routes/recordsRoutes.js";
+import datesRoutes from "./routes/datesRoutes.js";
 import cors from "cors";
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.use(cors(corsOptions));
 
 app.use("/api/users", userRoutes);
 app.use("/api/records", recordRoutes);
+app.use("/api/dates", datesRoutes);
 
 const PORT = process.env.PORT || 4000;
 
