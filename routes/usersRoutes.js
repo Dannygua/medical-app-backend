@@ -12,6 +12,9 @@ import {
   editUsers,
   editProfile,
   getSpecialists,
+  getPatient,
+  getDateSpecialists,
+  getSpecialist,
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -25,7 +28,10 @@ router.post("/login", login);
 router.post("/forget-password", forgetPassword);
 router.route("/forget-password/:token").get(findoutToken).post(NewPassword);
 router.get("/patients", checkAuth, getPatients);
-router.get("/specialists", checkAuth, getSpecialists);
+router.get("/especialists", checkAuth, getSpecialists);
+router.get("/datespecialists", checkAuth, getDateSpecialists);
 router.put("/:id", checkAuth, editUsers);
+router.get("/patients/:id", checkAuth, getPatient);
+router.get("/specialist/:id", checkAuth, getSpecialist);
 
 export default router;

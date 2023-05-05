@@ -26,8 +26,8 @@ const createRecord = async (req, res) => {
     }
 
     const existDate = await DateModel.find({
-      _id: iddate
-    })
+      _id: iddate,
+    });
 
     if (!existDate[0]) {
       const error = new Error("Cita no registrada");

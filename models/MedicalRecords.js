@@ -5,7 +5,7 @@ const RecordSchema = mongoose.Schema(
     iddate: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Dates",
-      required: true
+      required: true,
     },
     isMain: {
       type: Boolean,

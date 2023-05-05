@@ -151,7 +151,7 @@ const login = async (req, res) => {
       email: user.email,
       isPatient: user.isPatient,
       isDoctor: user.isDoctor,
-      dates: user.dates || []
+      dates: user.dates || [],
     });
   } else {
     const error = new Error("El password es incorrecto");
@@ -225,7 +225,12 @@ const getPatients = async (req, res) => {
   }
 
   try {
-    const patients = await User.find({ isPatient: true });
+    const patients = await User.find({ isPatient: true }).populate({
+      path: "dates",
+      populate: {
+        path: "record",
+      },
+    });
     res.status(200).json({ data: patients, status: true });
     console.log(patients);
   } catch (error) {
@@ -233,17 +238,107 @@ const getPatients = async (req, res) => {
   }
 };
 
+const getPatient = async (req, res) => {
+  const { id } = req.params;
+  const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    const patients = await User.find({ _id: id, isPatient: true }).populate({
+      path: "dates",
+      populate: {
+        path: "record",
+      },
+    });
+
+    if (!patients[0]) {
+      const error = new Error("el usuario no es un paciente");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
+    res.status(200).json({ data: patients, status: true });
+    console.log(patients);
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+const getDateSpecialists = async (req, res) => {
+  const { user } = req;
+  try {
+    if (!user.dates || user.dates.length === 0) {
+      const specialists = await User.find({ isDoctor: true });
+      res.status(200).json({ data: specialists, status: true });
+    } else if (user.dates.length > 0) {
+      const specialists = await User.find({
+        $or: [{ isDoctor: true }, { isNutri: true }, { isPychologist: true }],
+      });
+      res.status(200).json({ data: specialists, status: true });
+    }
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
 
 const getSpecialists = async (req, res) => {
   const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
   try {
-    if(!user.dates || user.dates.length === 0){
-      const specialists = await User.find({ isDoctor: true });    
-      res.status(200).json({ data: specialists, status: true });
-    }else if(user.dates.length > 0) {
-      const specialists = await User.find({ $or: [{ isDoctor: true }, { isNutri: true }, { isPychologist: true }] });    
-      res.status(200).json({ data: specialists, status: true });
+    const specialists = await User.find({
+      $or: [{ isNutri: true }, { isPychologist: true }],
+    })
+      .populate({
+        path: "dates",
+        populate: {
+          path: "record",
+        },
+      })
+      .populate("patients");
+    res.status(200).json({ data: specialists, status: true });
+    console.log(specialists);
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+const getSpecialist = async (req, res) => {
+  const { id } = req.params;
+  const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    const specialist = await User.find({
+      _id: id,
+      $or: [{ isNutri: true }, { isPychologist: true }],
+    })
+      .populate({
+        path: "dates",
+        populate: {
+          path: "record",
+        },
+      })
+      .populate("patients");
+
+    if (!specialist[0]) {
+      const error = new Error("el usuario no es un especialista");
+      return res.status(400).json({ msg: error.message, status: false });
     }
+
+    res.status(200).json({ data: specialist, status: true });
+    console.log(specialist);
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
@@ -262,9 +357,12 @@ export {
   findoutToken,
   NewPassword,
   getPatients,
+  getDateSpecialists,
   getSpecialists,
   registerNutri,
   profile,
   editUsers,
   editProfile,
+  getPatient,
+  getSpecialist,
 };
