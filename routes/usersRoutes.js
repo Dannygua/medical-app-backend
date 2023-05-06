@@ -28,7 +28,7 @@ router.post("/login", login);
 router.post("/forget-password", forgetPassword);
 router.route("/forget-password/:token").get(findoutToken).post(NewPassword);
 router.get("/patients", checkAuth, getPatients);
-router.get("/especialists", checkAuth, getSpecialists);
+router.get("/specialists", checkAuth, getSpecialists);
 router.get("/datespecialists", checkAuth, getDateSpecialists);
 router.put("/:id", checkAuth, editUsers);
 router.get("/patients/:id", checkAuth, getPatient);
