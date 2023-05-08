@@ -112,4 +112,22 @@ const getDatesRecent = async (req, res) => {
   }
 };
 
-export { createDate, getDatesByEspecialist, editDates, getDatesRecent };
+const getDatesByPatient = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const dates = await DateModel.find({
+      idpatient: new mongoose.Types.ObjectId(id),
+    });
+    res.status(200).json({ data: dates, status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+export {
+  createDate,
+  getDatesByEspecialist,
+  getDatesByPatient,
+  editDates,
+  getDatesRecent,
+};

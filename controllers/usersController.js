@@ -300,14 +300,9 @@ const getDateSpecialists = async (req, res) => {
 const getSpecialists = async (req, res) => {
   const { user } = req;
 
-  if (!user.isDoctor) {
-    const error = new Error("Usuario no autorizado para esta accion");
-    return res.status(400).json({ msg: error.message, status: false });
-  }
-
   try {
     const specialists = await User.find({
-      $or: [{ isNutri: true }, { isPychologist: true }],
+      $or: [{ isNutri: true }, { isPychologist: true }, { isDoctor: true }],
     })
       .populate({
         path: "dates",

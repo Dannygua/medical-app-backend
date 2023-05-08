@@ -5,6 +5,7 @@ import {
   getDatesByEspecialist,
   editDates,
   getDatesRecent,
+  getDatesByPatient,
 } from "../controllers/datesController.js";
 
 const router = express.Router();
@@ -13,5 +14,6 @@ router.post("/", checkAuth, createDate);
 router.get("/byEspecialist/:id", checkAuth, getDatesByEspecialist);
 router.put("/:id", checkAuth, editDates);
 router.get("/datesrecent", checkAuth, getDatesRecent);
+router.get("/byPatient/:id", checkAuth, getDatesByPatient);
 
 export default router;
