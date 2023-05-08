@@ -44,6 +44,15 @@ const UserSchema = mongoose.Schema(
       trim: true,
       default: false,
     },
+    active: {
+      type: Boolean,
+      trim: true,
+      default: true,
+    },
+    lastLoginDate: {
+      type: Date,
+      trim: true,
+    },
     dates: [
       {
         type: mongoose.Schema.Types.ObjectId,

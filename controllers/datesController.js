@@ -49,6 +49,7 @@ const createDate = async (req, res) => {
   }
 };
 
+//Puede que no se use
 const getDatesByEspecialist = async (req, res) => {
   const { id } = req.params;
   try {
@@ -61,4 +62,54 @@ const getDatesByEspecialist = async (req, res) => {
   }
 };
 
-export { createDate, getDatesByEspecialist };
+const editDates = async (req, res) => {
+  const { id } = req.params;
+  const { user } = req;
+  try {
+    const date = await DateModel.findById(id);
+
+    if (!date) {
+      const error = new Error("Cita no encontrado");
+      return res.status(401).json({ msg: error.message });
+    }
+
+    if (
+      date.idpatient.toString() == user._id.toString() ||
+      date.idespecialist.toString() == user._id.toString()
+    ) {
+      date.day = req.body.day || date.day;
+      date.start = req.body.start || date.start;
+      date.end = req.body.end || date.end;
+      date.comments = req.body.comments || date.comments;
+      date.recipe = req.body.recipe || date.recipe;
+      const datestored = await date.save();
+      res.status(200).json({ msg: datestored, status: true });
+    } else {
+      const error = new Error("Usuario no autorizado para esta accion");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+  } catch (error) {
+    res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
+
+const getDatesRecent = async (req, res) => {
+  const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    const dates = await DateModel.find();
+
+    dates.sort((date1, date2) => date2.updatedAt - date1.updatedAt);
+
+    res.status(200).json({ data: dates, status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+export { createDate, getDatesByEspecialist, editDates, getDatesRecent };

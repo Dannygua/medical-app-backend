@@ -94,13 +94,9 @@ const editProfile = async (req, res) => {
       return res.status(400).json({ msg: error.message, status: false });
     }
 
-    if (user.isPatient) {
-      const error = new Error("Usuario no autorizado para esta accion");
-      return res.status(400).json({ msg: error.message, status: false });
-    }
-
     userExist.firstname = req.body.firstname || userExist.firstname;
     userExist.lastname = req.body.lastname || userExist.lastname;
+    userExist.password = req.body.password || userExist.password;
     const userstored = await userExist.save();
     res.status(200).json({ msg: userstored, status: true });
   } catch (error) {
@@ -137,12 +133,27 @@ const registerNutri = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
+
   if (!user) {
     const error = new Error("El usuario no existe");
     return res.status(400).json({ msg: error.message });
   }
 
+  if (user.email != email) {
+    const error = new Error("El email es incorrecto");
+    return res.status(400).json({ msg: error.message });
+  }
+
+  if ((await user.comprobarPassword(password)) && user.email != email) {
+    const error = new Error("El email y contraseña son incorrectos");
+    return res.status(400).json({ msg: error.message });
+  }
+
   if (await user.comprobarPassword(password)) {
+    const time = Date.now();
+    const today = new Date(time);
+    user.lastLoginDate = today;
+
     res.json({
       _id: user._id,
       token: createJWT(user._id),
@@ -151,8 +162,10 @@ const login = async (req, res) => {
       email: user.email,
       isPatient: user.isPatient,
       isDoctor: user.isDoctor,
+      lastLoginDate: user.lastLoginDate,
       dates: user.dates || [],
     });
+    user.save();
   } else {
     const error = new Error("El password es incorrecto");
     return res.status(403).json({ msg: error.message });
@@ -349,6 +362,44 @@ const profile = async (req, res) => {
   res.status(200).json({ data: user, status: true });
 };
 
+const getUsersRecent = async (req, res) => {
+  const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    const users = await User.where("lastLoginDate").ne(null);
+
+    users.sort((date1, date2) => date2.lastLoginDate - date1.lastLoginDate);
+
+    res.status(200).json({ data: users, status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
+const getUsersRegisterRecent = async (req, res) => {
+  const { user } = req;
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    const users = await User.find();
+
+    users.sort((date1, date2) => date2.createdAt - date1.createdAt);
+
+    res.status(200).json({ data: users, status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 export {
   registerPatients,
   registerDoctors,
@@ -365,4 +416,6 @@ export {
   editProfile,
   getPatient,
   getSpecialist,
+  getUsersRecent,
+  getUsersRegisterRecent,
 };

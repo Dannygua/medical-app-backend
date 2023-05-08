@@ -21,6 +21,11 @@ const RecordSchema = mongoose.Schema(
       ref: "Usuarios",
       required: true,
     },
+    active: {
+      type: Boolean,
+      trim: true,
+      default: true,
+    },
     generalInfo: {
       bornDate: {
         type: Date,
