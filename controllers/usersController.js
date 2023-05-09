@@ -136,17 +136,17 @@ const login = async (req, res) => {
 
   if (!user) {
     const error = new Error("El usuario no existe");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 
   if (user.email != email) {
     const error = new Error("El email es incorrecto");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 
   if ((await user.comprobarPassword(password)) && user.email != email) {
     const error = new Error("El email y contraseña son incorrectos");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 
   if (await user.comprobarPassword(password)) {
@@ -166,6 +166,7 @@ const login = async (req, res) => {
       dates: user.dates || [],
     });
     user.save();
+    res.status(400).json({ msg: "Acceso al sitema permitido", status: true });
   } else {
     const error = new Error("El password es incorrecto");
     return res.status(403).json({ msg: error.message });
@@ -178,7 +179,7 @@ const forgetPassword = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) {
     const error = new Error("El usuario no existe");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 
   try {
@@ -191,6 +192,7 @@ const forgetPassword = async (req, res) => {
     });
     res.status(200).json({
       msg: "Hemos enviado un email a su correo con las istrucciones para recuperar su contraseña",
+      status: true,
     });
   } catch (error) {
     console.log(error);
@@ -201,10 +203,12 @@ const findoutToken = async (req, res) => {
   const { token } = req.params;
   const ValidToken = await User.findOne({ token });
   if (ValidToken) {
-    res.status(200).json({ msg: "Token valido y el usuario existe" });
+    res
+      .status(200)
+      .json({ msg: "Token valido y el usuario existe", status: true });
   } else {
     const error = new Error("Token no valido");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 };
 
@@ -219,13 +223,13 @@ const NewPassword = async (req, res) => {
       user.token = "";
 
       await user.save();
-      res.json({ msg: "Contraseña Modificado Correctamente" });
+      res.json({ msg: "Contraseña Modificado Correctamente", status: true });
     } catch (error) {
       console.log(error);
     }
   } else {
     const error = new Error("Token no valido");
-    return res.status(400).json({ msg: error.message });
+    return res.status(400).json({ msg: error.message, status: false });
   }
 };
 
