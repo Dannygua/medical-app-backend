@@ -1,9 +1,14 @@
 import DateModel from "../models/Dates.js";
 import Record from "../models/MedicalRecords.js";
 import User from "../models/Users.js";
+import {
+  DeleteUniqueImage,
+  uploadImages,
+  uploadMultipleImages,
+} from "../utils/uploadImage.js";
 
 const createRecord = async (req, res) => {
-  const { idpatient, idespecialist, iddate } = req.body;
+  const { idpatient, idespecialist, iddate, Test } = req.body;
 
   try {
     const existPatient = await User.find({
@@ -35,7 +40,18 @@ const createRecord = async (req, res) => {
     }
 
     const record = new Record(req.body);
+
+    if (Test && Test.resultPhoto) {
+      let url = await uploadMultipleImages(Test.resultPhoto);
+
+      record.Test.resultPhoto = [];
+      url.map(async (file) => {
+        record.Test.resultPhoto.push(file.file);
+      });
+    }
+
     await record.save();
+
     existDate[0].record = record._id;
     await existDate[0].save();
 
@@ -51,6 +67,7 @@ const createRecord = async (req, res) => {
 const editRecords = async (req, res) => {
   const { id } = req.params;
   const { user } = req;
+  const { Test } = req.body;
   try {
     const record = await Record.findById(id);
 
@@ -58,7 +75,23 @@ const editRecords = async (req, res) => {
       const error = new Error("Registro medico no encontrado");
       return res.status(401).json({ msg: error.message });
     }
+
     if (record.idespecialist.toString() == user._id.toString()) {
+      if (Test && Test.resultPhoto) {
+        record.Test.resultPhoto.map(async (file) => {
+          const arr = file.split(/[./]/);
+          await DeleteUniqueImage(arr[9]);
+        });
+
+        let url = await uploadMultipleImages(Test.resultPhoto);
+
+        record.Test.resultPhoto = [];
+        url.map((file) => {
+          record.Test.resultPhoto.push(file.file);
+        });
+      }
+
+      record.Test.name = req.body?.Test?.name || record.Test.name;
       record.generalInfo.bornDate =
         req.body?.generalInfo?.bornDate || record.generalInfo.bornDate;
       record.generalInfo.bornPlace =

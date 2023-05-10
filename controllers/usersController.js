@@ -154,7 +154,7 @@ const login = async (req, res) => {
     const today = new Date(time);
     user.lastLoginDate = today;
 
-    res.json({
+    res.status(200).json({
       _id: user._id,
       token: createJWT(user._id),
       firstname: user.firstname,
@@ -164,12 +164,12 @@ const login = async (req, res) => {
       isDoctor: user.isDoctor,
       lastLoginDate: user.lastLoginDate,
       dates: user.dates || [],
+      status: true,
     });
     user.save();
-    res.status(400).json({ msg: "Acceso al sitema permitido", status: true });
   } else {
     const error = new Error("El password es incorrecto");
-    return res.status(403).json({ msg: error.message });
+    return res.status(403).json({ msg: error.message, status: false });
   }
 };
 

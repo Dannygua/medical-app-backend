@@ -5,10 +5,14 @@ import userRoutes from "./routes/usersRoutes.js";
 import recordRoutes from "./routes/recordsRoutes.js";
 import datesRoutes from "./routes/datesRoutes.js";
 import cors from "cors";
+import bodyParser from "body-parser";
+import multer from "multer";
 
 dotenv.config();
+const upload = multer(); // config
 const app = express();
 app.use(express.json());
+app.use(upload.any());
 
 conectarDB();
 

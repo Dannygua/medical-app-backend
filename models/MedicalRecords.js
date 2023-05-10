@@ -26,6 +26,22 @@ const RecordSchema = mongoose.Schema(
       trim: true,
       default: true,
     },
+    Test: {
+      name: {
+        type: String,
+        trim: true,
+      },
+      namePhoto: {
+        type: String,
+        trim: true,
+      },
+      resultPhoto: [
+        {
+          type: String,
+        },
+      ],
+    },
+
     generalInfo: {
       bornDate: {
         type: Date,
@@ -53,7 +69,6 @@ const RecordSchema = mongoose.Schema(
       address: {
         type: String,
         required: true,
-
         //   validate: {
         //     validator: function () {
         //       return this.isPatient != true && this.address != null;
