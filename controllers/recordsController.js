@@ -17,7 +17,7 @@ const createRecord = async (req, res) => {
     });
     const existEspecialist = await User.find({
       _id: idespecialist,
-      $or: [{ isPychologist: true }, { isNutri: true }],
+      $or: [{ isPychologist: true }, { isNutri: true }, { isDoctor: true }],
     });
 
     if (!existPatient[0]) {
