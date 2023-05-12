@@ -11,9 +11,14 @@ const checkAuth = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       const decode = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decode.id).select(
-        "-password -token -createdAt -updatedAt -__v"
-      );
+      req.user = await User.find({ _id: decode.id })
+        .populate({
+          path: "dates",
+          populate: {
+            path: "record",
+          },
+        })
+        .populate("patients");
       return next();
     } catch (error) {
       return res.status(404).json({ msg: error.message });
