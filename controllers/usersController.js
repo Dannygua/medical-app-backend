@@ -326,11 +326,6 @@ const getSpecialist = async (req, res) => {
   const { id } = req.params;
   const { user } = req;
 
-  if (!user.isDoctor) {
-    const error = new Error("Usuario no autorizado para esta accion");
-    return res.status(400).json({ msg: error.message, status: false });
-  }
-
   try {
     const specialist = await User.find({
       _id: id,
