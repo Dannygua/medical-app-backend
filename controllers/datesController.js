@@ -55,7 +55,8 @@ const getDatesByEspecialist = async (req, res) => {
   try {
     const dates = await DateModel.find({
       idespecialist: new mongoose.Types.ObjectId(id),
-    });
+    })
+    .populate('record')
     res.status(200).json({ data: dates, status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
