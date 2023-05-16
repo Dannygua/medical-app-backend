@@ -41,13 +41,15 @@ const createRecord = async (req, res) => {
 
     const record = new Record(req.body);
 
-    if (Test && Test.resultPhoto) {
-      let url = await uploadMultipleImages(Test.resultPhoto);
+    if (Test && Test[0].resultPhoto) {
+      for (let i = 0; i < Test.length; i++) {
+        let url = await uploadMultipleImages(Test[i].resultPhoto);
 
-      record.Test.resultPhoto = [];
-      url.map(async (file) => {
-        record.Test.resultPhoto.push(file.file);
-      });
+        record.Test[i].resultPhoto = [];
+        url.map(async (file) => {
+          record.Test[i].resultPhoto.push(file.file);
+        });
+      }
     }
 
     await record.save();
@@ -76,22 +78,14 @@ const editRecords = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
+    for (let i = 0; i < record.Test.length; i++) {
+      record.Test[i]?.resultPhoto.map(async (file) => {
+        const arr = file.split(/[./]/);
+        await DeleteUniqueImage(arr[9]);
+      });
+    }
+
     if (record.idespecialist.toString() == user._id.toString()) {
-      if (Test && Test.resultPhoto) {
-        record.Test.resultPhoto.map(async (file) => {
-          const arr = file.split(/[./]/);
-          await DeleteUniqueImage(arr[9]);
-        });
-
-        let url = await uploadMultipleImages(Test.resultPhoto);
-
-        record.Test.resultPhoto = [];
-        url.map((file) => {
-          record.Test.resultPhoto.push(file.file);
-        });
-      }
-
-      record.Test.name = req.body?.Test?.name || record.Test.name;
       record.generalInfo.bornDate =
         req.body?.generalInfo?.bornDate || record.generalInfo.bornDate;
       record.generalInfo.bornPlace =
@@ -112,15 +106,37 @@ const editRecords = async (req, res) => {
         req.body?.medicalInfo?.imc || record.medicalInfo.imc;
       record.medicalInfo.weight =
         req.body?.medicalInfo?.weight || record.medicalInfo.weight;
-      const recordstored = await record.save();
+      if (Test && Test[0].resultPhoto) {
+        record.Test = req.body.Test || record.Test;
+      } else {
+        record.Test = [];
+      }
 
-      res.status(200).json({ msg: recordstored, status: true });
+      await record.save();
+
+      if (Test && Test[0].resultPhoto) {
+        for (let i = 0; i < Test.length; i++) {
+          try {
+            let url = await uploadMultipleImages(Test[i].resultPhoto);
+            record.Test[i].resultPhoto = [];
+            url.map((file) => {
+              record.Test[i].resultPhoto.push(file.file);
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
+      await record.save();
+      res.status(200).json({ msg: record, status: true });
     } else {
       const error = new Error("Usuario no autorizado para esta accion");
       return res.status(400).json({ msg: error.message, status: false });
     }
   } catch (error) {
-    res.status(404).json({ msg: "El id que ingresaste no es valido" });
+    console.log(error);
+    res.status(404).json({ msg: error.message });
   }
 };
 

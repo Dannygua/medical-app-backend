@@ -26,21 +26,23 @@ const RecordSchema = mongoose.Schema(
       trim: true,
       default: true,
     },
-    Test: {
-      name: {
-        type: String,
-        trim: true,
-      },
-      namePhoto: {
-        type: String,
-        trim: true,
-      },
-      resultPhoto: [
-        {
+    Test: [
+      {
+        name: {
           type: String,
+          trim: true,
         },
-      ],
-    },
+        namePhoto: {
+          type: String,
+          trim: true,
+        },
+        resultPhoto: [
+          {
+            type: String,
+          },
+        ],
+      },
+    ],
 
     generalInfo: {
       bornDate: {
