@@ -17,12 +17,14 @@ import {
   getSpecialist,
   getUsersRecent,
   getUsersRegisterRecent,
+  Info,
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
 const router = express.Router();
 
 router.post("/patients", registerPatients);
+router.post("/info", Info);
 router.post("/doctors", checkAuth, registerDoctors);
 router.post("/nutri", checkAuth, registerNutri);
 router.route("/profile").get(checkAuth, profile).put(checkAuth, editProfile);

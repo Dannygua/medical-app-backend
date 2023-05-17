@@ -1,6 +1,11 @@
 import createId from "../helpers/createId.js";
 import createJWT from "../helpers/createJWT.js";
-import { emailCredentials, emailForgetPassword } from "../helpers/emails.js";
+import {
+  emailCredentials,
+  emailCredentialsSpecialists,
+  emailForgetPassword,
+  emailInfo,
+} from "../helpers/emails.js";
 import User from "../models/Users.js";
 
 const registerPatients = async (req, res) => {
@@ -108,6 +113,7 @@ const registerNutri = async (req, res) => {
   const { email, isPatient, isPychologist, isNutri, isDoctor } = req.body;
 
   const UserExist = await User.findOne({ email: email });
+  const AutoPassword = createId();
 
   if (UserExist) {
     const error = new Error("Usuario ya registrado");
@@ -121,8 +127,16 @@ const registerNutri = async (req, res) => {
     } else {
       const user = new User(req.body);
       user.token = "";
+      user.password = AutoPassword;
       await user.save();
+
+      emailCredentialsSpecialists({
+        firstname: user.firstname,
+        email: user.email,
+        password: AutoPassword,
+      });
     }
+
     res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
   } catch (error) {
     console.log(error.message);
@@ -397,6 +411,20 @@ const getUsersRegisterRecent = async (req, res) => {
   }
 };
 
+const Info = async (req, res) => {
+  const { email, firstname, phone } = req.body;
+  console.log(email);
+  try {
+    emailInfo({
+      firstname: firstname,
+      email: email,
+      phone: phone,
+    });
+    res.status(200).json({ msg: "Correo enviado correctamente", status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
 export {
   registerPatients,
   registerDoctors,
@@ -415,4 +443,5 @@ export {
   getSpecialist,
   getUsersRecent,
   getUsersRegisterRecent,
+  Info,
 };

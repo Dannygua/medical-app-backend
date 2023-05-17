@@ -47,6 +47,32 @@ export const emailCredentials = async (datos) => {
   }
 };
 
+export const emailCredentialsSpecialists = async (datos) => {
+  const { firstname, email, password } = datos;
+  console.log(email);
+
+  try {
+    await sendEmail({
+      //the client email
+      to: `${email}`,
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      subject: "Nicecode - Credenciales de seguridad",
+      text: "Correo de bienvenida",
+      html: `<p>Hola: ${firstname} te han asignado al sistema medico </p>
+      <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
+      <p>Email: ${email}</p> 
+      <p>Contraseña: ${password}</p> 
+      <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
+      <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
+      <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
+      `,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const emailDate = async (datos) => {
   const { firstname, email, especialistemail } = datos;
   console.log(email);
@@ -65,6 +91,31 @@ export const emailDate = async (datos) => {
       <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
+      `,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const emailInfo = async (datos) => {
+  const { email, firstname, phone } = datos;
+  console.log(email);
+
+  try {
+    await sendEmail({
+      //the client email
+      to: "solicitudesdrbariatrico55@gmail.com",
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      subject: "Nicecode - Credenciales de seguridad",
+      text: "Correo de solicitud de informacion",
+      html: `<p> Un Paciente ha solicitado informacion acerca 
+      del procedimiento medico</p>
+      <p> puedes comunicarte con el mediante la siguiente informacion </p>
+      <p>Email: ${email}</p> 
+      <p>Email: ${firstname}</p> 
+      <p>Email: ${phone}</p> 
       `,
     });
   } catch (error) {
