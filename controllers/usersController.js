@@ -152,16 +152,15 @@ const registerNutri = async (req, res) => {
       const user = new User(req.body);
       user.token = "";
       user.password = AutoPassword;
-      await user.save();
+      const storedUser = await user.save();
 
       emailCredentialsSpecialists({
         firstname: user.firstname,
         email: user.email,
         password: AutoPassword,
       });
+      res.status(200).json({ msg: storedUser, status: true });
     }
-
-    res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ msg: error.message, status: false });
@@ -187,16 +186,16 @@ const registerPsicologist = async (req, res) => {
       const user = new User(req.body);
       user.token = "";
       user.password = AutoPassword;
-      await user.save();
+      const storedUser = await user.save();
 
       emailCredentialsSpecialists({
         firstname: user.firstname,
         email: user.email,
         password: AutoPassword,
       });
-    }
 
-    res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
+      res.status(200).json({ msg: storedUser, status: true });
+    }
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ msg: error.message, status: false });
