@@ -144,6 +144,41 @@ const registerNutri = async (req, res) => {
   }
 };
 
+const registerPsicologist = async (req, res) => {
+  const { email, isPatient, isPychologist, isNutri, isDoctor } = req.body;
+
+  const UserExist = await User.findOne({ email: email });
+  const AutoPassword = createId();
+
+  if (UserExist) {
+    const error = new Error("Usuario ya registrado");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+    if (isPatient || !isPychologist || isNutri || isDoctor) {
+      const error = new Error("El usuario debe ser un Psicologo");
+      return res.status(400).json({ msg: error.message, status: false });
+    } else {
+      const user = new User(req.body);
+      user.token = "";
+      user.password = AutoPassword;
+      await user.save();
+
+      emailCredentialsSpecialists({
+        firstname: user.firstname,
+        email: user.email,
+        password: AutoPassword,
+      });
+    }
+
+    res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -444,4 +479,5 @@ export {
   getUsersRecent,
   getUsersRegisterRecent,
   Info,
+  registerPsicologist,
 };

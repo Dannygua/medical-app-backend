@@ -18,6 +18,7 @@ import {
   getUsersRecent,
   getUsersRegisterRecent,
   Info,
+  registerPsicologist,
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -27,6 +28,7 @@ router.post("/patients", registerPatients);
 router.post("/info", Info);
 router.post("/doctors", checkAuth, registerDoctors);
 router.post("/nutri", checkAuth, registerNutri);
+router.post("/psicologist", checkAuth, registerPsicologist);
 router.route("/profile").get(checkAuth, profile).put(checkAuth, editProfile);
 router.post("/login", login);
 router.post("/forget-password", forgetPassword);
