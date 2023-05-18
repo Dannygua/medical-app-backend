@@ -19,6 +19,7 @@ import {
   getUsersRegisterRecent,
   Info,
   registerPsicologist,
+  ChangeState,
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -41,5 +42,6 @@ router.get("/patients/:id", checkAuth, getPatient);
 router.get("/specialist/:id", checkAuth, getSpecialist);
 router.get("/usersrecent", checkAuth, getUsersRecent);
 router.get("/usersregisterrecent", checkAuth, getUsersRegisterRecent);
+router.post("/changestate", checkAuth, ChangeState);
 
 export default router;

@@ -89,6 +89,30 @@ const editUsers = async (req, res) => {
   }
 };
 
+const ChangeState = async (req, res) => {
+  const { id } = req.body;
+  const { user } = req;
+  try {
+    const userExist = await User.findById(id);
+
+    if (!userExist) {
+      const error = new Error("Usuario no encontrado");
+      return res.status(401).json({ msg: error.message });
+    }
+    if (!user.isDoctor) {
+      const error = new Error("Usuario no autorizado para esta accion");
+      return res.status(400).json({ msg: error.message, status: false });
+    } else {
+      userExist.active = !userExist.active;
+      const userstored = await userExist.save();
+      res.status(200).json({ msg: userstored, status: true });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
+
 const editProfile = async (req, res) => {
   const { user } = req;
   try {
@@ -480,4 +504,5 @@ export {
   getUsersRegisterRecent,
   Info,
   registerPsicologist,
+  ChangeState,
 };
