@@ -235,7 +235,7 @@ const login = async (req, res) => {
       isPatient: user.isPatient,
       isDoctor: user.isDoctor,
       isPychologist: user.isPychologist,
-      isNutri: user.isPychologist,
+      isNutri: user.isNutri,
       lastLoginDate: user.lastLoginDate,
       dates: user.dates || [],
       status: true,
