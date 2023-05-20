@@ -239,6 +239,8 @@ const login = async (req, res) => {
       email: user.email,
       isPatient: user.isPatient,
       isDoctor: user.isDoctor,
+      isPychologist: user.isPychologist,
+      isNutri: user.isNutri,
       lastLoginDate: user.lastLoginDate,
       dates: user.dates || [],
       status: true,
@@ -312,11 +314,6 @@ const NewPassword = async (req, res) => {
 
 const getPatients = async (req, res) => {
   const { user } = req;
-
-  if (!user.isDoctor) {
-    const error = new Error("Usuario no autorizado para esta accion");
-    return res.status(400).json({ msg: error.message, status: false });
-  }
 
   try {
     const patients = await User.find({ isPatient: true }).populate({
