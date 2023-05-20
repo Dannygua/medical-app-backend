@@ -221,6 +221,11 @@ const login = async (req, res) => {
     return res.status(400).json({ msg: error.message, status: false });
   }
 
+  if (!user.active) {
+    const error = new Error("El usuario se encuentra desactivado");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
   if (await user.comprobarPassword(password)) {
     const time = Date.now();
     const today = new Date(time);
@@ -374,6 +379,8 @@ const getDateSpecialists = async (req, res) => {
 };
 
 const getSpecialists = async (req, res) => {
+  const { active } = req.query;
+  console.log(active);
   try {
     const specialists = await User.find({
       $or: [{ isNutri: true }, { isPychologist: true }, { isDoctor: true }],
@@ -386,7 +393,6 @@ const getSpecialists = async (req, res) => {
       })
       .populate("patients");
     res.status(200).json({ data: specialists, status: true });
-    console.log(specialists);
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }

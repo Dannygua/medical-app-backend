@@ -26,6 +26,10 @@ const RecordSchema = mongoose.Schema(
       trim: true,
       default: true,
     },
+    recipe: {
+      type: String,
+      trim: true,
+    },
     Test: [
       {
         name: {

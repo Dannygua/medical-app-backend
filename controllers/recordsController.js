@@ -106,16 +106,22 @@ const editRecords = async (req, res) => {
         req.body?.medicalInfo?.imc || record.medicalInfo.imc;
       record.medicalInfo.weight =
         req.body?.medicalInfo?.weight || record.medicalInfo.weight;
-      if (Test && Test[0].resultPhoto) {
-        record.Test = req.body.Test || record.Test;
-      } else {
-        record.Test = [];
-      }
+      record.Test = req.body.Test || record.Test;
+
+      // for (let i = 0; i < record.Test.length; i++) {
+      //   record.Test[i].name = req.body?.Test[i].name || record.Test[i].name;
+      // }
+
+      // if (Test && Test[0].resultPhoto) {
+      //   record.Test = req.body.Test || record.Test;
+      // } else {
+      //   record.Test[0].resultPhoto = [];
+      // }
 
       await record.save();
 
-      if (Test && Test[0].resultPhoto) {
-        for (let i = 0; i < Test.length; i++) {
+      for (let i = 0; i < Test.length; i++) {
+        if (Test && Test[i]?.resultPhoto) {
           try {
             let url = await uploadMultipleImages(Test[i].resultPhoto);
             record.Test[i].resultPhoto = [];
@@ -125,6 +131,8 @@ const editRecords = async (req, res) => {
           } catch (error) {
             console.log(error);
           }
+        } else {
+          console.log("No hay imagenes");
         }
       }
 
