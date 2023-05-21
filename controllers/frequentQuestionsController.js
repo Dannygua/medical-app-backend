@@ -4,7 +4,7 @@ import FrequentQuestion from "../models/FrequentQuestions.js";
 const getAllQuestions = async (req, res) => {
     try {
         const justActive = req.query.justActive;
-        if (justActive) {
+        if (justActive==="true") {
             const questions = await FrequentQuestion.find({ active: true })
             res.status(200).json({ data: questions, status: true });
         } else {
