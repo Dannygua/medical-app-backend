@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/usersRoutes.js";
 import recordRoutes from "./routes/recordsRoutes.js";
 import datesRoutes from "./routes/datesRoutes.js";
+import frequentQuestionsRoutes from "./routes/frequentQuestionsRoutes.js";
 import cors from "cors";
 import bodyParser from "body-parser";
 import multer from "multer";
@@ -33,6 +34,7 @@ app.use(cors(corsOptions));
 app.use("/api/users", userRoutes);
 app.use("/api/records", recordRoutes);
 app.use("/api/dates", datesRoutes);
+app.use("/api/frequentQuestions", frequentQuestionsRoutes)
 
 const PORT = process.env.PORT || 4000;
 
