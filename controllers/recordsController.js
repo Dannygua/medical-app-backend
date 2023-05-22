@@ -119,7 +119,7 @@ const editRecords = async (req, res) => {
         record.nutriInfo.exercisePerWeek = req.body?.nutriInfo?.exercisePerWeek || record.nutriInfo.exercisePerWeek
         record.nutriInfo.dailyWater = req.body?.nutriInfo?.dailyWater || record.nutriInfo.dailyWater
         record.nutriInfo.comments = req.body?.nutriInfo?.comments || record.nutriInfo.comments
-        record.nutriInfo.isAllowed = req.body?.nutriInfo?.isAllowed || record.nutriInfo.isAllowed
+        record.nutriInfo.isAllowed = ('nutriInfo' in req.body && 'isAllowed' in req.body?.nutriInfo) ? req.body?.nutriInfo?.isAllowed : record.nutriInfo.isAllowed
       }
 
 
