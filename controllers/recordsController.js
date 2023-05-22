@@ -89,6 +89,45 @@ const editRecords = async (req, res) => {
 
     if (record.idespecialist.toString() == user._id.toString()) {
 
+      if ('generalInfo' in record) {
+        record.generalInfo.bornDate =
+          req.body?.generalInfo?.bornDate || record.generalInfo.bornDate;
+        record.generalInfo.bornPlace =
+          req.body?.generalInfo?.bornPlace || record.generalInfo.bornPlace;
+        record.generalInfo.ci =
+          req?.body?.generalInfo.ci || record.generalInfo.ci;
+        record.generalInfo.civilState =
+          req.body?.generalInfo?.civilState || record.generalInfo.civilState;
+
+        record.contactInfo.address =
+          req.body?.contactInfo?.address || record.contactInfo.address;
+        record.contactInfo.phone =
+          req.body?.contactInfo?.phone || record.contactInfo.phone;
+
+        record.medicalInfo.height =
+          req.body?.medicalInfo?.height || record.medicalInfo.height;
+        record.medicalInfo.imc =
+          req.body?.medicalInfo?.imc || record.medicalInfo.imc;
+        record.medicalInfo.weight =
+          req.body?.medicalInfo?.weight || record.medicalInfo.weight;
+        record.Test = req.body.Test || record.Test;
+      }
+
+      if('nutriInfo' in record){
+        record.nutriInfo.waistMeasurement = req.body?.nutriInfo?.waistMeasurement || record.nutriInfo.waistMeasurement;
+        record.nutriInfo.backMeasurement = req.body?.nutriInfo?.backMeasurement || record.nutriInfo.backMeasurement
+        record.nutriInfo.exercisePerWeek = req.body?.nutriInfo?.exercisePerWeek || record.nutriInfo.exercisePerWeek
+        record.nutriInfo.dailyWater = req.body?.nutriInfo?.dailyWater || record.nutriInfo.dailyWater
+        record.nutriInfo.comments = req.body?.nutriInfo?.comments || record.nutriInfo.comments
+        record.nutriInfo.isAllowed = req.body?.nutriInfo?.isAllowed || record.nutriInfo.isAllowed
+      }
+
+
+      if('psychologistInfo' in record){
+        record.psychologistInfo.comments = req.body?.psychologistInfo?.comments || record.psychologistInfo.comments
+        record.psychologistInfo.isAllowed = req.body?.psychologistInfo?.isAllowed || record.psychologistInfo.isAllowed
+      }
+
       await record.save();
 
       if (Test && Test.length > 0) {
