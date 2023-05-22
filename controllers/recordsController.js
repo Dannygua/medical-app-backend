@@ -89,7 +89,7 @@ const editRecords = async (req, res) => {
 
     if (record.idespecialist.toString() == user._id.toString()) {
 
-      if ('generalInfo' in record) {
+      if (user.isDoctor) {
         record.generalInfo.bornDate =
           req.body?.generalInfo?.bornDate || record.generalInfo.bornDate;
         record.generalInfo.bornPlace =
@@ -113,7 +113,7 @@ const editRecords = async (req, res) => {
         record.Test = req.body.Test || record.Test;
       }
 
-      if('nutriInfo' in record){
+      if(user.isNutri){
         record.nutriInfo.waistMeasurement = req.body?.nutriInfo?.waistMeasurement || record.nutriInfo.waistMeasurement;
         record.nutriInfo.backMeasurement = req.body?.nutriInfo?.backMeasurement || record.nutriInfo.backMeasurement
         record.nutriInfo.exercisePerWeek = req.body?.nutriInfo?.exercisePerWeek || record.nutriInfo.exercisePerWeek
@@ -123,7 +123,7 @@ const editRecords = async (req, res) => {
       }
 
 
-      if('psychologistInfo' in record){
+      if(user.isPychologist){
         record.psychologistInfo.comments = req.body?.psychologistInfo?.comments || record.psychologistInfo.comments
         record.psychologistInfo.isAllowed = req.body?.psychologistInfo?.isAllowed || record.psychologistInfo.isAllowed
       }
