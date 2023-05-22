@@ -38,8 +38,7 @@ const updateQuestion = async (req, res) => {
             return res.status(401).json({ msg: error.message });
         }
 
-        console.log(req.body)
-
+        
         questionExist.question = req.body.question || questionExist.question
         questionExist.answer = req.body.answer || questionExist.answer
         questionExist.active = 'active' in req.body ? req.body.active : questionExist.active
