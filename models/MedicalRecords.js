@@ -24,7 +24,7 @@ const RecordSchema = mongoose.Schema(
     active: {
       type: Boolean,
       trim: true,
-      default: true,
+      default: false,
     },
     recipe: {
       type: String,
@@ -51,22 +51,18 @@ const RecordSchema = mongoose.Schema(
     generalInfo: {
       bornDate: {
         type: Date,
-        // required: true,
         trim: true,
       },
       bornPlace: {
         type: String,
-        required: true,
         trim: true,
       },
       ci: {
         type: String,
-        required: true,
         trim: true,
       },
       civilState: {
         type: String,
-        required: true,
         trim: true,
       },
     },
@@ -74,7 +70,6 @@ const RecordSchema = mongoose.Schema(
     contactInfo: {
       address: {
         type: String,
-        required: true,
         //   validate: {
         //     validator: function () {
         //       return this.isPatient != true && this.address != null;
@@ -85,7 +80,6 @@ const RecordSchema = mongoose.Schema(
       },
       phone: {
         type: Number,
-        required: true,
         trim: true,
       },
     },
@@ -93,20 +87,69 @@ const RecordSchema = mongoose.Schema(
     medicalInfo: {
       height: {
         type: Number,
-        required: true,
         trim: true,
       },
       imc: {
         type: Number,
-        required: true,
         trim: true,
       },
       weight: {
         type: Number,
-        required: true,
+        trim: true,
+      },
+      isAllowed: {
+        type: Boolean,
         trim: true,
       },
     },
+
+    nutriInfo: {
+      allergies: [
+        {
+          name: {
+            type: String,
+            trim: true,
+          }
+        },
+      ],
+      waistMeasurement: {
+        type: Number,
+        trim: true
+      },
+      backMeasurement: {
+        type: Number,
+        trim: true
+      },
+      exercisePerWeek: {
+        type: Number,
+        trim: true
+      },
+      dailyWater: {
+        type: Number,
+        trim: true
+      },
+      comments: {
+        type: String
+      },
+      isAllowed: {
+        type: Boolean,
+        trim: true,
+      },
+    },
+
+    psychologistInfo: {
+      comments: {
+        type: String
+      },
+      isAllowed: {
+        type: Boolean,
+        trim: true,
+      }
+    },
+
+    comments: {
+      type: String
+    }
   },
 
   {

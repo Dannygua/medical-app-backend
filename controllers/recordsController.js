@@ -78,65 +78,38 @@ const editRecords = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
-    for (let i = 0; i < record.Test.length; i++) {
-      record.Test[i]?.resultPhoto.map(async (file) => {
-        const arr = file.split(/[./]/);
-        await DeleteUniqueImage(arr[9]);
-      });
+    if (record.Test && record.Test.length > 0) {
+      for (let i = 0; i < record.Test.length; i++) {
+        record.Test[i]?.resultPhoto.map(async (file) => {
+          const arr = file.split(/[./]/);
+          await DeleteUniqueImage(arr[9]);
+        });
+      }
     }
 
     if (record.idespecialist.toString() == user._id.toString()) {
-      record.generalInfo.bornDate =
-        req.body?.generalInfo?.bornDate || record.generalInfo.bornDate;
-      record.generalInfo.bornPlace =
-        req.body?.generalInfo?.bornPlace || record.generalInfo.bornPlace;
-      record.generalInfo.ci =
-        req?.body?.generalInfo.ci || record.generalInfo.ci;
-      record.generalInfo.civilState =
-        req.body?.generalInfo?.civilState || record.generalInfo.civilState;
-
-      record.contactInfo.address =
-        req.body?.contactInfo?.address || record.contactInfo.address;
-      record.contactInfo.phone =
-        req.body?.contactInfo?.phone || record.contactInfo.phone;
-
-      record.medicalInfo.height =
-        req.body?.medicalInfo?.height || record.medicalInfo.height;
-      record.medicalInfo.imc =
-        req.body?.medicalInfo?.imc || record.medicalInfo.imc;
-      record.medicalInfo.weight =
-        req.body?.medicalInfo?.weight || record.medicalInfo.weight;
-      record.Test = req.body.Test || record.Test;
-
-      // for (let i = 0; i < record.Test.length; i++) {
-      //   record.Test[i].name = req.body?.Test[i].name || record.Test[i].name;
-      // }
-
-      // if (Test && Test[0].resultPhoto) {
-      //   record.Test = req.body.Test || record.Test;
-      // } else {
-      //   record.Test[0].resultPhoto = [];
-      // }
 
       await record.save();
 
-      for (let i = 0; i < Test.length; i++) {
-        if (Test && Test[i]?.resultPhoto) {
-          try {
-            let url = await uploadMultipleImages(Test[i].resultPhoto);
-            record.Test[i].resultPhoto = [];
-            url.map((file) => {
-              record.Test[i].resultPhoto.push(file.file);
-            });
-          } catch (error) {
-            console.log(error);
+      if (Test && Test.length > 0) {
+        for (let i = 0; i < Test.length; i++) {
+          if (Test && Test[i]?.resultPhoto) {
+            try {
+              let url = await uploadMultipleImages(Test[i].resultPhoto);
+              record.Test[i].resultPhoto = [];
+              url.map((file) => {
+                record.Test[i].resultPhoto.push(file.file);
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          } else {
+            console.log("No hay imagenes");
           }
-        } else {
-          console.log("No hay imagenes");
         }
+        await record.save();
       }
 
-      await record.save();
       res.status(200).json({ msg: record, status: true });
     } else {
       const error = new Error("Usuario no autorizado para esta accion");
