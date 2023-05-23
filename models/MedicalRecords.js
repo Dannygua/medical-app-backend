@@ -26,10 +26,22 @@ const RecordSchema = mongoose.Schema(
       trim: true,
       default: false,
     },
-    recipe: {
-      type: String,
-      trim: true,
-    },
+    recipe: [
+      {
+        name: {
+          type: String,
+          trim: true,
+        },
+        dose: {
+          type: String,
+          trim: true,
+        },
+        frequency: {
+          type: String,
+          trim: true,
+        },
+      },
+    ],
     Test: [
       {
         name: {
@@ -109,27 +121,27 @@ const RecordSchema = mongoose.Schema(
           name: {
             type: String,
             trim: true,
-          }
+          },
         },
       ],
       waistMeasurement: {
         type: Number,
-        trim: true
+        trim: true,
       },
       backMeasurement: {
         type: Number,
-        trim: true
+        trim: true,
       },
       exercisePerWeek: {
         type: Number,
-        trim: true
+        trim: true,
       },
       dailyWater: {
         type: Number,
-        trim: true
+        trim: true,
       },
       comments: {
-        type: String
+        type: String,
       },
       isAllowed: {
         type: Boolean,
@@ -139,17 +151,17 @@ const RecordSchema = mongoose.Schema(
 
     psychologistInfo: {
       comments: {
-        type: String
+        type: String,
       },
       isAllowed: {
         type: Boolean,
         trim: true,
-      }
+      },
     },
 
     comments: {
-      type: String
-    }
+      type: String,
+    },
   },
 
   {

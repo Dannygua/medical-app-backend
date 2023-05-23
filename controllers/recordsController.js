@@ -88,7 +88,6 @@ const editRecords = async (req, res) => {
     }
 
     if (record.idespecialist.toString() == user._id.toString()) {
-
       if (user.isDoctor) {
         record.generalInfo.bornDate =
           req.body?.generalInfo?.bornDate || record.generalInfo.bornDate;
@@ -110,22 +109,37 @@ const editRecords = async (req, res) => {
           req.body?.medicalInfo?.imc || record.medicalInfo.imc;
         record.medicalInfo.weight =
           req.body?.medicalInfo?.weight || record.medicalInfo.weight;
+        record.recipe = req.body?.recipe || record.recipe;
         record.Test = req.body.Test || record.Test;
       }
 
-      if(user.isNutri){
-        record.nutriInfo.waistMeasurement = req.body?.nutriInfo?.waistMeasurement || record.nutriInfo.waistMeasurement;
-        record.nutriInfo.backMeasurement = req.body?.nutriInfo?.backMeasurement || record.nutriInfo.backMeasurement
-        record.nutriInfo.exercisePerWeek = req.body?.nutriInfo?.exercisePerWeek || record.nutriInfo.exercisePerWeek
-        record.nutriInfo.dailyWater = req.body?.nutriInfo?.dailyWater || record.nutriInfo.dailyWater
-        record.nutriInfo.comments = req.body?.nutriInfo?.comments || record.nutriInfo.comments
-        record.nutriInfo.isAllowed = ('nutriInfo' in req.body && 'isAllowed' in req.body?.nutriInfo) ? req.body?.nutriInfo?.isAllowed : record.nutriInfo.isAllowed
+      if (user.isNutri) {
+        record.nutriInfo.waistMeasurement =
+          req.body?.nutriInfo?.waistMeasurement ||
+          record.nutriInfo.waistMeasurement;
+        record.nutriInfo.backMeasurement =
+          req.body?.nutriInfo?.backMeasurement ||
+          record.nutriInfo.backMeasurement;
+        record.nutriInfo.exercisePerWeek =
+          req.body?.nutriInfo?.exercisePerWeek ||
+          record.nutriInfo.exercisePerWeek;
+        record.nutriInfo.dailyWater =
+          req.body?.nutriInfo?.dailyWater || record.nutriInfo.dailyWater;
+        record.nutriInfo.comments =
+          req.body?.nutriInfo?.comments || record.nutriInfo.comments;
+        record.nutriInfo.isAllowed =
+          "nutriInfo" in req.body && "isAllowed" in req.body?.nutriInfo
+            ? req.body?.nutriInfo?.isAllowed
+            : record.nutriInfo.isAllowed;
       }
 
-
-      if(user.isPychologist){
-        record.psychologistInfo.comments = req.body?.psychologistInfo?.comments || record.psychologistInfo.comments
-        record.psychologistInfo.isAllowed = req.body?.psychologistInfo?.isAllowed || record.psychologistInfo.isAllowed
+      if (user.isPychologist) {
+        record.psychologistInfo.comments =
+          req.body?.psychologistInfo?.comments ||
+          record.psychologistInfo.comments;
+        record.psychologistInfo.isAllowed =
+          req.body?.psychologistInfo?.isAllowed ||
+          record.psychologistInfo.isAllowed;
       }
 
       await record.save();
