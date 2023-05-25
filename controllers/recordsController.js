@@ -132,6 +132,7 @@ const editRecords = async (req, res) => {
           "nutriInfo" in req.body && "isAllowed" in req.body?.nutriInfo
             ? req.body?.nutriInfo?.isAllowed
             : record.nutriInfo.isAllowed;
+        record.diet = req.body?.diet || record.diet;
       }
 
       if (user.isPychologist) {
