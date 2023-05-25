@@ -34,7 +34,7 @@ app.use(cors(corsOptions));
 app.use("/api/users", userRoutes);
 app.use("/api/records", recordRoutes);
 app.use("/api/dates", datesRoutes);
-app.use("/api/frequentQuestions", frequentQuestionsRoutes)
+app.use("/api/frequentQuestions", frequentQuestionsRoutes);
 
 const PORT = process.env.PORT || 4000;
 

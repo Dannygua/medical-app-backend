@@ -42,6 +42,26 @@ const RecordSchema = mongoose.Schema(
         },
       },
     ],
+    diet: [
+      {
+        name: {
+          type: String,
+          trim: true,
+        },
+        qty: {
+          type: String,
+          trim: true,
+        },
+        moment: {
+          type: String,
+          trim: true,
+        },
+        description: {
+          type: String,
+          trim: true,
+        },
+      },
+    ],
     Test: [
       {
         name: {

@@ -110,6 +110,7 @@ const editRecords = async (req, res) => {
         record.medicalInfo.weight =
           req.body?.medicalInfo?.weight || record.medicalInfo.weight;
         record.recipe = req.body?.recipe || record.recipe;
+        record.diet = req.body?.diet || record.diet;
         record.Test = req.body.Test || record.Test;
       }
 
