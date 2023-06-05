@@ -110,8 +110,8 @@ const editRecords = async (req, res) => {
         record.medicalInfo.weight =
           req.body?.medicalInfo?.weight || record.medicalInfo.weight;
         record.recipe = req.body?.recipe || record.recipe;
-        record.diet = req.body?.diet || record.diet;
         record.Test = req.body.Test || record.Test;
+        record.care = req.body.care || record.care;
       }
 
       if (user.isNutri) {
@@ -133,6 +133,7 @@ const editRecords = async (req, res) => {
             ? req.body?.nutriInfo?.isAllowed
             : record.nutriInfo.isAllowed;
         record.diet = req.body?.diet || record.diet;
+        record.activity = req.body?.activity || record.activity;
       }
 
       if (user.isPychologist) {
