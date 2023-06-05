@@ -44,18 +44,22 @@ const RecordSchema = mongoose.Schema(
     ],
     diet: [
       {
-        name: {
+        description: {
           type: String,
           trim: true,
         },
-        qty: {
+      },
+    ],
+    activity: [
+      {
+        description: {
           type: String,
           trim: true,
         },
-        moment: {
-          type: String,
-          trim: true,
-        },
+      },
+    ],
+    care: [
+      {
         description: {
           type: String,
           trim: true,
@@ -130,6 +134,34 @@ const RecordSchema = mongoose.Schema(
         trim: true,
       },
       isAllowed: {
+        type: Boolean,
+        trim: true,
+      },
+      clinichistory: {
+        type: String,
+        trim: true,
+      },
+      relationship: {
+        type: String,
+        trim: true,
+      },
+      CEspecial: {
+        type: Boolean,
+        trim: true,
+      },
+      hospital: {
+        type: Boolean,
+        trim: true,
+      },
+      hospitalization: {
+        type: Boolean,
+        trim: true,
+      },
+      room: {
+        type: String,
+        trim: true,
+      },
+      emergency: {
         type: Boolean,
         trim: true,
       },
