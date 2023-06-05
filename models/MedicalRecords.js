@@ -145,11 +145,11 @@ const RecordSchema = mongoose.Schema(
         type: String,
         trim: true,
       },
-      CEspecial: {
-        type: Boolean,
+      distribution: {
+        type: String,
         trim: true,
       },
-      hospital: {
+      CEspecial: {
         type: Boolean,
         trim: true,
       },

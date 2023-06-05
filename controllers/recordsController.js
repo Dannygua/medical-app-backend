@@ -109,6 +109,24 @@ const editRecords = async (req, res) => {
           req.body?.medicalInfo?.imc || record.medicalInfo.imc;
         record.medicalInfo.weight =
           req.body?.medicalInfo?.weight || record.medicalInfo.weight;
+        record.medicalInfo.clinichistory =
+          req.body?.medicalInfo?.clinichistory ||
+          record.medicalInfo.clinichistory;
+        record.medicalInfo.relationship =
+          req.body?.medicalInfo?.relationship ||
+          record.medicalInfo.relationship;
+        record.medicalInfo.distribution =
+          req.body?.medicalInfo?.distribution ||
+          record.medicalInfo.distribution;
+        record.medicalInfo.CEspecial =
+          req.body?.medicalInfo?.CEspecial || record.medicalInfo.CEspecial;
+        record.medicalInfo.hospitalization =
+          req.body?.medicalInfo?.hospitalization ||
+          record.medicalInfo.hospitalization;
+        record.medicalInfo.room =
+          req.body?.medicalInfo?.room || record.medicalInfo.room;
+        record.medicalInfo.emergency =
+          req.body?.medicalInfo?.emergency || record.medicalInfo.emergency;
         record.recipe = req.body?.recipe || record.recipe;
         record.Test = req.body.Test || record.Test;
         record.care = req.body.care || record.care;
@@ -132,6 +150,24 @@ const editRecords = async (req, res) => {
           "nutriInfo" in req.body && "isAllowed" in req.body?.nutriInfo
             ? req.body?.nutriInfo?.isAllowed
             : record.nutriInfo.isAllowed;
+        record.medicalInfo.clinichistory =
+          req.body?.medicalInfo?.clinichistory ||
+          record.medicalInfo.clinichistory;
+        record.medicalInfo.relationship =
+          req.body?.medicalInfo?.relationship ||
+          record.medicalInfo.relationship;
+        record.medicalInfo.distribution =
+          req.body?.medicalInfo?.distribution ||
+          record.medicalInfo.distribution;
+        record.medicalInfo.CEspecial =
+          req.body?.medicalInfo?.CEspecial || record.medicalInfo.CEspecial;
+        record.medicalInfo.hospitalization =
+          req.body?.medicalInfo?.hospitalization ||
+          record.medicalInfo.hospitalization;
+        record.medicalInfo.room =
+          req.body?.medicalInfo?.room || record.medicalInfo.room;
+        record.medicalInfo.emergency =
+          req.body?.medicalInfo?.emergency || record.medicalInfo.emergency;
         record.diet = req.body?.diet || record.diet;
         record.activity = req.body?.activity || record.activity;
       }
