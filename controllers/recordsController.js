@@ -8,7 +8,7 @@ import {
 } from "../utils/uploadImage.js";
 
 const createRecord = async (req, res) => {
-  const { idpatient, idespecialist, iddate, Test } = req.body;
+  const { idpatient, idespecialist, iddate, Test, testResults } = req.body;
 
   try {
     const existPatient = await User.find({
@@ -41,15 +41,24 @@ const createRecord = async (req, res) => {
 
     const record = new Record(req.body);
 
-    if (Test && Test[0].resultPhoto) {
-      for (let i = 0; i < Test.length; i++) {
-        let url = await uploadMultipleImages(Test[i].resultPhoto);
+    /*
+      if (Test && Test[0].resultPhoto) {
+        for (let i = 0; i < Test.length; i++) {
+          let url = await uploadMultipleImages(Test[i].resultPhoto);
 
-        record.Test[i].resultPhoto = [];
-        url.map(async (file) => {
-          record.Test[i].resultPhoto.push(file.file);
-        });
+          record.Test[i].resultPhoto = [];
+          url.map(async (file) => {
+            record.Test[i].resultPhoto.push(file.file);
+          });
+        }
       }
+    */
+
+    if(testResults && testResults.length > 0){
+      let resultUrls = await uploadMultipleImages(testResults);
+      resultUrls.map(async (file) => {
+        record.testResults.push(file.file);
+      });
     }
 
     await record.save();
@@ -69,7 +78,7 @@ const createRecord = async (req, res) => {
 const editRecords = async (req, res) => {
   const { id } = req.params;
   const { user } = req;
-  const { Test } = req.body;
+  const { testResults } = req.body;
   try {
     const record = await Record.findById(id);
 
@@ -78,6 +87,7 @@ const editRecords = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
+    /*
     if (record.Test && record.Test.length > 0) {
       for (let i = 0; i < record.Test.length; i++) {
         record.Test[i]?.resultPhoto.map(async (file) => {
@@ -85,6 +95,14 @@ const editRecords = async (req, res) => {
           await DeleteUniqueImage(arr[9]);
         });
       }
+    }
+    */
+
+    if (record.testResults && record.testResults.length > 0){
+      record.testResults?.map(async (file) => {
+          const arr = file.split(/[./]/);
+          await DeleteUniqueImage(arr[9]);
+      });
     }
 
     if (record.idespecialist.toString() == user._id.toString()) {
@@ -181,26 +199,15 @@ const editRecords = async (req, res) => {
           record.psychologistInfo.isAllowed;
       }
 
-      await record.save();
-
-      if (Test && Test.length > 0) {
-        for (let i = 0; i < Test.length; i++) {
-          if (Test && Test[i]?.resultPhoto) {
-            try {
-              let url = await uploadMultipleImages(Test[i].resultPhoto);
-              record.Test[i].resultPhoto = [];
-              url.map((file) => {
-                record.Test[i].resultPhoto.push(file.file);
-              });
-            } catch (error) {
-              console.log(error);
-            }
-          } else {
-            console.log("No hay imagenes");
-          }
-        }
-        await record.save();
+      
+      if(testResults && testResults.length > 0){
+        let resultUrls = await uploadMultipleImages(testResults);
+        resultUrls.map(async (file) => {
+          record.testResults.push(file.file);
+        });
       }
+      
+      await record.save();
 
       res.status(200).json({ msg: record, status: true });
     } else {
