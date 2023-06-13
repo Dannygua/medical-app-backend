@@ -54,15 +54,7 @@ const createRecord = async (req, res) => {
       }
     */
 
-    if(testResults && testResults.length > 0){
-      let resultUrls = await uploadMultipleImages(testResults);
-      resultUrls.map(async (file) => {
-        record.testResults.push(file.file);
-      });
-    }
-
     await record.save();
-
     existDate[0].record = record._id;
     await existDate[0].save();
 
@@ -97,13 +89,6 @@ const editRecords = async (req, res) => {
       }
     }
     */
-
-    if (record.testResults && record.testResults.length > 0){
-      record.testResults?.map(async (file) => {
-          const arr = file.split(/[./]/);
-          await DeleteUniqueImage(arr[9]);
-      });
-    }
 
     if (record.idespecialist.toString() == user._id.toString()) {
       if (user.isDoctor) {
@@ -147,6 +132,7 @@ const editRecords = async (req, res) => {
           req.body?.medicalInfo?.emergency || record.medicalInfo.emergency;
         record.recipe = req.body?.recipe || record.recipe;
         record.Test = req.body.Test || record.Test;
+        record.testResults = req.body.testResults || record.testResults
         record.care = req.body.care || record.care;
       }
 
@@ -199,13 +185,6 @@ const editRecords = async (req, res) => {
           record.psychologistInfo.isAllowed;
       }
 
-      
-      if(testResults && testResults.length > 0){
-        let resultUrls = await uploadMultipleImages(testResults);
-        resultUrls.map(async (file) => {
-          record.testResults.push(file.file);
-        });
-      }
       
       await record.save();
 
