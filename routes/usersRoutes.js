@@ -20,6 +20,7 @@ import {
   Info,
   registerPsicologist,
   ChangeState,
+  sendWarning,
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -43,5 +44,6 @@ router.get("/specialist/:id", checkAuth, getSpecialist);
 router.get("/usersrecent", checkAuth, getUsersRecent);
 router.get("/usersregisterrecent", checkAuth, getUsersRegisterRecent);
 router.post("/changestate", checkAuth, ChangeState);
+router.post("/sendWarning", sendWarning);
 
 export default router;

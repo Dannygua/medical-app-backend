@@ -122,3 +122,25 @@ export const emailInfo = async (datos) => {
     console.log(error);
   }
 };
+
+
+export const emailWarning = async (datos) => {
+  const { email } = datos;
+  
+  try {
+    await sendEmail({
+      //the client email
+      to: [`${email}`],
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      subject: "Nicecode - Credenciales de seguridad",
+      text: "Correo de advertencia",
+      html: `<p> Hola, hemos detectado un problema en tu proceso de pérdida de peso</p>
+      <p> Por favor agenda una cita lo más pronto posible!</p>
+      `,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
