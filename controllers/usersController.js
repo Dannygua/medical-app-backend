@@ -76,15 +76,13 @@ const editUsers = async (req, res) => {
       const error = new Error("Usuario no encontrado");
       return res.status(401).json({ msg: error.message });
     }
-    if (!user.isDoctor) {
-      const error = new Error("Usuario no autorizado para esta accion");
-      return res.status(400).json({ msg: error.message, status: false });
-    } else {
-      userExist.firstname = req.body.firstname || userExist.firstname;
-      userExist.lastname = req.body.lastname || userExist.lastname;
-      const userstored = await userExist.save();
-      res.status(200).json({ msg: userstored, status: true });
-    }
+
+    userExist.firstname = req.body.firstname || userExist.firstname;
+    userExist.lastname = req.body.lastname || userExist.lastname;
+    userExist.bodyImages = req.body.bodyImages || userExist.bodyImages;
+    const userstored = await userExist.save();
+    res.status(200).json({ msg: userstored, status: true });
+
   } catch (error) {
     res.status(404).json({ msg: "El id que ingresaste no es valido" });
   }
@@ -127,6 +125,7 @@ const editProfile = async (req, res) => {
     userExist.firstname = req.body.firstname || userExist.firstname;
     userExist.lastname = req.body.lastname || userExist.lastname;
     userExist.password = req.body.password || userExist.password;
+    userExist.bodyImages = req.body.bodyImages || userExist.bodyImages;
     const userstored = await userExist.save();
     res.status(200).json({ msg: userstored, status: true });
   } catch (error) {
@@ -245,6 +244,7 @@ const login = async (req, res) => {
       lastLoginDate: user.lastLoginDate,
       dates: user.dates || [],
       status: true,
+      bodyImages: user.bodyImages || []
     });
     user.save();
   } else {
@@ -333,12 +333,12 @@ const getPatients = async (req, res) => {
 const getPatient = async (req, res) => {
   const { id } = req.params;
   const { user } = req;
-
+  /*
   if (!user.isDoctor) {
     const error = new Error("Usuario no autorizado para esta accion");
     return res.status(400).json({ msg: error.message, status: false });
   }
-
+  */
   try {
     const patients = await User.find({ _id: id, isPatient: true }).populate({
       path: "dates",

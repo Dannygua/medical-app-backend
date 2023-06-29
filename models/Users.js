@@ -68,6 +68,17 @@ const UserSchema = mongoose.Schema(
     token: {
       type: String,
     },
+    bodyImages: [
+      {
+        name: {
+          type: String,
+          trim: true,
+        },
+        url: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
