@@ -83,6 +83,7 @@ const editDates = async (req, res) => {
       date.end = req.body.end || date.end;
       date.comments = req.body.comments || date.comments;
       date.recipe = req.body.recipe || date.recipe;
+      date.callUrl = req.body.callUrl || date.callUrl;
       const datestored = await date.save();
       res.status(200).json({ msg: datestored, status: true });
     } else {

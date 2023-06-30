@@ -43,6 +43,10 @@ const DateSchema = mongoose.Schema(
       trim: true,
       default: true,
     },
+    callUrl: {
+      type: String,
+      default: ''
+    },
   },
 
   {
