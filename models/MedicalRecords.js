@@ -75,7 +75,7 @@ const RecordSchema = mongoose.Schema(
       },
     ],
 
-    testResults:[
+    testResults: [
       {
         url: {
           type: String,
@@ -163,6 +163,9 @@ const RecordSchema = mongoose.Schema(
       emergency: {
         type: Boolean,
         trim: true,
+      },
+      comments: {
+        type: String,
       },
     },
 

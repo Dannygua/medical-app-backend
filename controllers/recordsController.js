@@ -134,6 +134,8 @@ const editRecords = async (req, res) => {
         record.Test = req.body.Test || record.Test;
         record.testResults = req.body.testResults || record.testResults
         record.care = req.body.care || record.care;
+        record.medicalInfo.comments =
+        req.body?.medicalInfo?.comments || record.medicalInfo.comments;
       }
 
       if (user.isNutri) {

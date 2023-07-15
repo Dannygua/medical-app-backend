@@ -505,6 +505,64 @@ const sendWarning = async (req, res) => {
 
 
 
+const searchPatients = async (req, res) => {
+  const { search } = req.query;
+  try {
+    const patients = await User.find({ isPatient: true }).populate({
+      path: "dates",
+      populate: {
+        path: "record",
+      },
+    });
+
+    const filteredPatients = patients.filter(
+      (sp) =>
+        sp.firstname.toLowerCase().includes(search.toLowerCase()) ||
+        sp.lastname.toLowerCase().includes(search.toLowerCase()) ||
+        sp.email.toLowerCase().includes(search.toLowerCase())
+    );
+
+    if (!patients[0]) {
+      const error = new Error("el usuario no es un paciente");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
+    res.status(200).json({ status: true, search: search, data: filteredPatients });
+    console.log(patients);
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+}
+
+
+const searchSpecialists = async (req, res) => {
+  const { search } = req.query;
+
+  try {
+    const specialists = await User.find({
+      $or: [{ isNutri: true }, { isPychologist: true }, { isDoctor: true }],
+    })
+      .populate({
+        path: "dates",
+        populate: {
+          path: "record",
+        },
+      })
+      .populate("patients");
+
+    const filteredSpecialists = specialists.filter(
+      (sp) =>
+        sp.firstname.toLowerCase().includes(search.toLowerCase()) ||
+        sp.lastname.toLowerCase().includes(search.toLowerCase()) ||
+        sp.email.toLowerCase().includes(search.toLowerCase())
+    );
+
+    res.status(200).json({ search: search , status: true, data: filteredSpecialists });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 export {
   registerPatients,
   registerDoctors,
@@ -526,5 +584,7 @@ export {
   Info,
   registerPsicologist,
   ChangeState,
-  sendWarning
+  sendWarning,
+  searchPatients,
+  searchSpecialists
 };

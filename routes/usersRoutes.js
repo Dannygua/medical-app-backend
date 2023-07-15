@@ -21,6 +21,8 @@ import {
   registerPsicologist,
   ChangeState,
   sendWarning,
+  searchPatients,
+  searchSpecialists
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -45,5 +47,8 @@ router.get("/usersrecent", checkAuth, getUsersRecent);
 router.get("/usersregisterrecent", checkAuth, getUsersRegisterRecent);
 router.post("/changestate", checkAuth, ChangeState);
 router.post("/sendWarning", sendWarning);
+
+router.get("/searchPatients", searchPatients)
+router.get("/searchSpecialists", searchSpecialists)
 
 export default router;
