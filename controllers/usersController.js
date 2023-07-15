@@ -519,6 +519,7 @@ const searchPatients = async (req, res) => {
       (sp) =>
         sp.firstname.toLowerCase().includes(search.toLowerCase()) ||
         sp.lastname.toLowerCase().includes(search.toLowerCase()) ||
+        (sp.firstname.toLowerCase() + " " + sp.lastname.toLowerCase()).includes(search.toLowerCase()) ||
         sp.email.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -554,10 +555,11 @@ const searchSpecialists = async (req, res) => {
       (sp) =>
         sp.firstname.toLowerCase().includes(search.toLowerCase()) ||
         sp.lastname.toLowerCase().includes(search.toLowerCase()) ||
+        (sp.firstname.toLowerCase() + " " + sp.lastname.toLowerCase()).includes(search.toLowerCase()) ||
         sp.email.toLowerCase().includes(search.toLowerCase())
     );
 
-    res.status(200).json({ search: search , status: true, data: filteredSpecialists });
+    res.status(200).json({ search: search, status: true, data: filteredSpecialists });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
