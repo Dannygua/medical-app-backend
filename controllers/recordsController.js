@@ -162,7 +162,7 @@ const editRecords = async (req, res) => {
       }
 
       if (user.isNutri) {
-
+        console.log('REQ', req )
         record.nutriInfo.neckMeasurement =
           req.body?.nutriInfo?.neckMeasurement ||
           record.nutriInfo.neckMeasurement;
