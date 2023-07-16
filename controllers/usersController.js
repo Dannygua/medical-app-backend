@@ -508,6 +508,12 @@ const sendWarning = async (req, res) => {
 const searchPatients = async (req, res) => {
   const { search } = req.query;
   try {
+
+    if(search===""){
+      res.status(200).json({ status: true, search: search, data: [] });
+      return; 
+    }
+
     const patients = await User.find({ isPatient: true }).populate({
       path: "dates",
       populate: {
