@@ -135,10 +135,50 @@ const editRecords = async (req, res) => {
         record.testResults = req.body.testResults || record.testResults
         record.care = req.body.care || record.care;
         record.medicalInfo.comments =
-        req.body?.medicalInfo?.comments || record.medicalInfo.comments;
+          req.body?.medicalInfo?.comments || record.medicalInfo.comments;
+        
+        record.nutriInfo.neckMeasurement =
+          req.body?.nutriInfo?.neckMeasurement ||
+          record.nutriInfo.neckMeasurement;
+
+        record.nutriInfo.armsMeasurement =
+          req.body?.nutriInfo?.armsMeasurement ||
+          record.nutriInfo.armsMeasurement;
+
+        record.nutriInfo.hipMeasurement =
+          req.body?.nutriInfo?.hipMeasurement ||
+          record.nutriInfo.hipMeasurement;
+
+        record.nutriInfo.legsMeasurement =
+          req.body?.nutriInfo?.legsMeasurement ||
+          record.nutriInfo.legsMeasurement;
+
+        record.nutriInfo.waistMeasurement =
+          req.body?.nutriInfo?.waistMeasurement ||
+          record.nutriInfo.waistMeasurement;
+        record.nutriInfo.backMeasurement =
+          req.body?.nutriInfo?.backMeasurement ||
+          record.nutriInfo.backMeasurement;
       }
 
       if (user.isNutri) {
+
+        record.nutriInfo.neckMeasurement =
+          req.body?.nutriInfo?.neckMeasurement ||
+          record.nutriInfo.neckMeasurement;
+
+        record.nutriInfo.armsMeasurement =
+          req.body?.nutriInfo?.armsMeasurement ||
+          record.nutriInfo.armsMeasurement;
+
+        record.nutriInfo.hipMeasurement =
+          req.body?.nutriInfo?.hipMeasurement ||
+          record.nutriInfo.hipMeasurement;
+
+        record.nutriInfo.legsMeasurement =
+          req.body?.nutriInfo?.legsMeasurement ||
+          record.nutriInfo.legsMeasurement;
+
         record.nutriInfo.waistMeasurement =
           req.body?.nutriInfo?.waistMeasurement ||
           record.nutriInfo.waistMeasurement;
@@ -187,7 +227,7 @@ const editRecords = async (req, res) => {
           record.psychologistInfo.isAllowed;
       }
 
-      
+
       await record.save();
 
       res.status(200).json({ msg: record, status: true });

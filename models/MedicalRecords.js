@@ -178,11 +178,27 @@ const RecordSchema = mongoose.Schema(
           },
         },
       ],
+      neckMesaurement: {
+        type: Number,
+        trim: true
+      },
+      armsMesaurement: {
+        type: Number,
+        trim: true
+      },
+      backMeasurement: {
+        type: Number,
+        trim: true,
+      },
       waistMeasurement: {
         type: Number,
         trim: true,
       },
-      backMeasurement: {
+      hipMeasurement: {
+        type: Number,
+        trim: true,
+      },
+      legMeasurement: {
         type: Number,
         trim: true,
       },
