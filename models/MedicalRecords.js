@@ -182,7 +182,7 @@ const RecordSchema = mongoose.Schema(
         type: Number,
         trim: true
       },
-      neckMeasurement: {
+      armsMeasurement: {
         type: Number,
         trim: true
       },
