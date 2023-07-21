@@ -85,7 +85,7 @@ export const emailDate = async (datos) => {
       from: "drbariatrico250@gmail.com",
       subject: "¡Tienes una cita nueva!",
       text: "Notificación de cita",
-      html: `<p> te han asignado una cita con un especialista </p>
+      html: `<p> Te han asignado una cita con un especialista </p>
       <p> Recuerda asistir a tu cita puntualmente</p>
       <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
       <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
@@ -111,7 +111,7 @@ export const emailUpdateDate = async (datos) => {
       from: "drbariatrico250@gmail.com",
       subject: "¡Tu cita ha sido reagendada!",
       text: "Notificación de cita",
-      html: `<p> te han reasignado una cita con un especialista </p>
+      html: `<p> Te han reasignado una cita con un especialista </p>
       <p> Recuerda asistir a tu cita puntualmente</p>
       <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
       <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
