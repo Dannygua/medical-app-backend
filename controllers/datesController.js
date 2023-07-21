@@ -152,10 +152,31 @@ const getDatesByPatient = async (req, res) => {
   }
 };
 
+
+
+const deleteDate = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const date = await DateModel.findById(id);
+
+    if (!date) {
+      const error = new Error("Cita no encontrada");
+      return res.status(401).json({ msg: error.message });
+    }
+
+    await DateModel.deleteOne({ _id: id})
+    res.status(200).json({ msg: "Cita eliminada exitosamente", status: true  })
+  
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+}
+
 export {
   createDate,
   getDatesByEspecialist,
   getDatesByPatient,
   editDates,
   getDatesRecent,
+  deleteDate
 };
