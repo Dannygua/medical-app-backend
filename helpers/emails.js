@@ -83,9 +83,35 @@ export const emailDate = async (datos) => {
       to: [`${email}`, `${especialistemail}`],
       //sendGrid sender id
       from: "drbariatrico250@gmail.com",
-      subject: "Nicecode - Credenciales de seguridad",
-      text: "Correo de bienvenida",
+      subject: "¡Tienes una cita nueva!",
+      text: "Notificación de cita",
       html: `<p> te han asignado una cita con un especialista </p>
+      <p> Recuerda asistir a tu cita puntualmente</p>
+      <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
+      <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
+      <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
+      <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
+      `,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+export const emailUpdateDate = async (datos) => {
+  const { firstname, email, especialistemail } = datos;
+  console.log(email);
+
+  try {
+    await sendEmail({
+      //the client email
+      to: [`${email}`, `${especialistemail}`],
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      subject: "¡Tu cita ha sido reagendada!",
+      text: "Notificación de cita",
+      html: `<p> te han reasignado una cita con un especialista </p>
       <p> Recuerda asistir a tu cita puntualmente</p>
       <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
       <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
@@ -133,10 +159,10 @@ export const emailWarning = async (datos) => {
       to: [`${email}`],
       //sendGrid sender id
       from: "drbariatrico250@gmail.com",
-      subject: "Nicecode - Credenciales de seguridad",
+      subject: "¡Información muy importante para tu salud!",
       text: "Correo de advertencia",
       html: `<p> Hola, hemos detectado un problema en tu proceso de pérdida de peso</p>
-      <p> Por favor agenda una cita lo más pronto posible!</p>
+      <p> Por favor agenda una cita con el nutricionista lo más pronto posible!</p>
       `,
     });
   } catch (error) {

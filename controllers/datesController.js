@@ -1,4 +1,4 @@
-import { emailDate } from "../helpers/emails.js";
+import { emailDate, emailUpdateDate } from "../helpers/emails.js";
 import DateModel from "../models/Dates.js";
 import User from "../models/Users.js";
 import mongoose from "mongoose";
@@ -56,7 +56,7 @@ const getDatesByEspecialist = async (req, res) => {
     const dates = await DateModel.find({
       idespecialist: new mongoose.Types.ObjectId(id),
     })
-    .populate('record')
+      .populate('record')
     res.status(200).json({ data: dates, status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
@@ -70,7 +70,7 @@ const editDates = async (req, res) => {
     const date = await DateModel.findById(id);
 
     if (!date) {
-      const error = new Error("Cita no encontrado");
+      const error = new Error("Cita no encontrada");
       return res.status(401).json({ msg: error.message });
     }
 
@@ -85,6 +85,32 @@ const editDates = async (req, res) => {
       date.recipe = req.body.recipe || date.recipe;
       date.callUrl = req.body.callUrl || date.callUrl;
       const datestored = await date.save();
+
+      const existPatient = await User.find({
+        _id: date.idpatient,
+        isPatient: true,
+      });
+      const existEspecialist = await User.find({
+        _id: date.idespecialist,
+        $or: [{ isPychologist: true }, { isNutri: true }, { isDoctor: true }],
+      });
+
+      if (!existPatient[0]) {
+        const error = new Error("Paciente no registrado");
+        return res.status(400).json({ msg: error.message, status: false });
+      }
+
+      if (!existEspecialist[0]) {
+        const error = new Error("Especialista no registrado");
+        return res.status(400).json({ msg: error.message, status: false });
+      }
+
+      emailUpdateDate({
+        firstname: existPatient[0].firstname,
+        email: existPatient[0].email,
+        especialistemail: existEspecialist[0].email,
+      });
+
       res.status(200).json({ msg: datestored, status: true });
     } else {
       const error = new Error("Usuario no autorizado para esta accion");
