@@ -197,7 +197,7 @@ const getLastMeasuresBy = async (req, res) => {
         datesWithNutriInfo.sort((a, b) => b.start - a.start);
 
         // Paso 3: Accede al primer elemento del arreglo, que será el registro más actual
-        const registroMasActual = datesWithNutriInfo[0];
+        const registroMasActual = datesWithNutriInfo[0].record.nutriInfo;
 
         if (registroMasActual) {
           const {
