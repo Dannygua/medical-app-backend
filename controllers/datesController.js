@@ -183,6 +183,7 @@ const getLastMeasuresBy = async (req, res) => {
     
     let response = false;  
     const datesWithRecord = dates.filter((date) => 'record' in date)
+    console.log('CAMBIO!')
 
     if(datesWithRecord.length>0){
       const datesWithFilledRecord = datesWithRecord.filter((date) => date.record!==undefined)
