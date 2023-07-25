@@ -80,6 +80,7 @@ const editUsers = async (req, res) => {
     userExist.firstname = req.body.firstname || userExist.firstname;
     userExist.lastname = req.body.lastname || userExist.lastname;
     userExist.bodyImages = req.body.bodyImages || userExist.bodyImages;
+    userExist.notifToken = req.body.notifToken || userExist.notifToken;
     const userstored = await userExist.save();
     res.status(200).json({ msg: userstored, status: true });
 

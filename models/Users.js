@@ -79,6 +79,10 @@ const UserSchema = mongoose.Schema(
         },
       },
     ],
+    notifToken: {
+      type: String,
+      default: ""
+    }
   },
   {
     timestamps: true,

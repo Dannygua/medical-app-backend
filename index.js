@@ -16,6 +16,27 @@ const app = express();
 app.use(express.json());
 app.use(upload.any());
 
+
+/*FIREBASE*/
+/*
+const admin = require('firebase-admin');
+admin.initializeApp({
+  credential: admin.credential.cert({
+    apiKey: "AIzaSyDW41Pbip5XUyqnL0g89Zj7RCGXQGCkv5s",
+    authDomain: "bypassgastricoec.firebaseapp.com",
+    projectId: "bypassgastricoec",
+    storageBucket: "bypassgastricoec.appspot.com",
+    messagingSenderId: "1083213293687",
+    appId: "1:1083213293687:web:d28045cc873ef5c9fa3e72",
+    measurementId: "G-ZD7BYP9LN6"
+  }),
+});
+*/
+/*END FIREBASE*/
+
+
+
+
 conectarDB();
 
 const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL_LOCAL];
