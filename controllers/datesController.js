@@ -142,11 +142,20 @@ const getDatesRecent = async (req, res) => {
 
 const getDatesByPatient = async (req, res) => {
   const { id } = req.params;
+  const fp = req.query.fp;
   try {
-    const dates = await DateModel.find({
-      idpatient: new mongoose.Types.ObjectId(id),
-    }).populate('record').populate('idespecialist');
-    res.status(200).json({ data: dates, status: true });
+    if (!fp) {
+      const dates = await DateModel.find({
+        idpatient: new mongoose.Types.ObjectId(id),
+      }).populate('record')
+
+      res.status(200).json({ data: dates, status: true });
+    } else {
+      const dates = await DateModel.find({
+        idpatient: new mongoose.Types.ObjectId(id),
+      }).populate('record').populate('idespecialist');
+      res.status(200).json({ data: dates, status: true });
+    }
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
@@ -180,43 +189,43 @@ const getLastMeasuresBy = async (req, res) => {
     const dates = await DateModel.find({
       idpatient: new mongoose.Types.ObjectId(id),
     }).populate('record');
-    
-    let response = false;  
+
+    let response = false;
     const datesWithRecord = dates.filter((date) => 'record' in date)
     console.log('CAMBIO!')
 
-    if(datesWithRecord.length>0){
-      const datesWithFilledRecord = datesWithRecord.filter((date) => date.record!==undefined)
+    if (datesWithRecord.length > 0) {
+      const datesWithFilledRecord = datesWithRecord.filter((date) => date.record !== undefined)
       if (datesWithFilledRecord.length > 0) {
         const datesWithNutriInfo = datesWithFilledRecord.filter((date) => 'nutriInfo' in date.record)
-  
+
         if (datesWithNutriInfo.length > 0) {
-  
+
           // Paso 1: Parsea las fechas a objetos Date
           datesWithNutriInfo.forEach(objeto => {
             objeto.start = new Date(objeto.start);
           });
-  
+
           // Paso 2: Ordena el arreglo en orden descendente según la propiedad "start"
           datesWithNutriInfo.sort((a, b) => b.start - a.start);
-  
+
           // Paso 3: Accede al primer elemento del arreglo, que será el registro más actual
           const registroMasActual = datesWithNutriInfo[0].record.nutriInfo;
-  
+
           if (registroMasActual) {
             const {
               neckMeasurement,
               armsMeasurement,
               backMeasurement,
-              waistMeasurement, 
+              waistMeasurement,
               hipMeasurement,
               legsMeasurement,
             } = registroMasActual
             response = {
               neckMeasurement,
               armsMeasurement,
-              backMeasurement, 
-              waistMeasurement, 
+              backMeasurement,
+              waistMeasurement,
               hipMeasurement,
               legsMeasurement
             }
