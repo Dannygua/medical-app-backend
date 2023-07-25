@@ -7,6 +7,7 @@ import {
   getDatesRecent,
   getDatesByPatient,
   deleteDate,
+  getLastMeasuresBy,
 } from "../controllers/datesController.js";
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.put("/:id", checkAuth, editDates);
 router.get("/datesrecent", checkAuth, getDatesRecent);
 router.get("/byPatient/:id", checkAuth, getDatesByPatient);
 router.delete("/:id", checkAuth, deleteDate)
+router.get("/lastMeasuresBy/:id",  checkAuth, getLastMeasuresBy)
 
 export default router;
