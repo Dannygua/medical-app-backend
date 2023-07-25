@@ -180,47 +180,49 @@ const getLastMeasuresBy = async (req, res) => {
     const dates = await DateModel.find({
       idpatient: new mongoose.Types.ObjectId(id),
     }).populate('record');
-
+    
+    let response = false;  
     const datesWithRecord = dates.filter((date) => 'record' in date)
-    let response = false;
-    if (datesWithRecord.length > 0) {
-      const datesWithNutriInfo = datesWithRecord.filter((date) => 'nutriInfo' in date.record)
 
-      if (datesWithNutriInfo.length > 0) {
-
-        // Paso 1: Parsea las fechas a objetos Date
-        datesWithNutriInfo.forEach(objeto => {
-          objeto.start = new Date(objeto.start);
-        });
-
-        // Paso 2: Ordena el arreglo en orden descendente según la propiedad "start"
-        datesWithNutriInfo.sort((a, b) => b.start - a.start);
-
-        // Paso 3: Accede al primer elemento del arreglo, que será el registro más actual
-        const registroMasActual = datesWithNutriInfo[0].record.nutriInfo;
-
-        if (registroMasActual) {
-          const {
-            neckMeasurement,
-            armsMeasurement,
-            backMeasurement,
-            waistMeasurement, 
-            hipMeasurement,
-            legsMeasurement,
-          } = registroMasActual
-          response = {
-            neckMeasurement,
-            armsMeasurement,
-            backMeasurement, 
-            waistMeasurement, 
-            hipMeasurement,
-            legsMeasurement
+    if(datesWithRecord.length>0){
+      const datesWithFilledRecord = datesWithRecord.filter((date) => date.record!==undefined)
+      if (datesWithFilledRecord.length > 0) {
+        const datesWithNutriInfo = datesWithFilledRecord.filter((date) => 'nutriInfo' in date.record)
+  
+        if (datesWithNutriInfo.length > 0) {
+  
+          // Paso 1: Parsea las fechas a objetos Date
+          datesWithNutriInfo.forEach(objeto => {
+            objeto.start = new Date(objeto.start);
+          });
+  
+          // Paso 2: Ordena el arreglo en orden descendente según la propiedad "start"
+          datesWithNutriInfo.sort((a, b) => b.start - a.start);
+  
+          // Paso 3: Accede al primer elemento del arreglo, que será el registro más actual
+          const registroMasActual = datesWithNutriInfo[0].record.nutriInfo;
+  
+          if (registroMasActual) {
+            const {
+              neckMeasurement,
+              armsMeasurement,
+              backMeasurement,
+              waistMeasurement, 
+              hipMeasurement,
+              legsMeasurement,
+            } = registroMasActual
+            response = {
+              neckMeasurement,
+              armsMeasurement,
+              backMeasurement, 
+              waistMeasurement, 
+              hipMeasurement,
+              legsMeasurement
+            }
           }
         }
       }
     }
-
-
     res.status(200).json({ data: response, status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
