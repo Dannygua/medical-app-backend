@@ -20,8 +20,7 @@ app.use(express.json());
 app.use(upload.any());
 
 
-/*FIREBASE*/
-
+/*FIREBASE
 admin.initializeApp({
   credential: admin.credential.cert({
     "type": "service_account",
@@ -37,9 +36,7 @@ admin.initializeApp({
     "universe_domain": "googleapis.com"
   }),
 });
-
-/*END FIREBASE*/
-
+END FIREBASE*/
 
 
 
