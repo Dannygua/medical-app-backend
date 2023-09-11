@@ -1,9 +1,6 @@
 
 import express from "express";
 import conectarDB from "./config/bd.js";
-import admin from 'firebase-admin';
-// import serviceAccount from './fconfig.json' assert { type: 'json' };
-
 import dotenv from "dotenv";
 import userRoutes from "./routes/usersRoutes.js";
 import recordRoutes from "./routes/recordsRoutes.js";
