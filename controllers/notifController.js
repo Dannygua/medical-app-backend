@@ -1,10 +1,15 @@
 import Notification from "../models/Notifications.js";
+import mongoose from "mongoose";
 
 const notificationsByReceiver = async (req, res) => {
   try {
     const { receiverId } = req.params;
     const notifications = await Notification.find({ receiverId: new mongoose.Types.ObjectId(receiverId) }).populate('senderId');
-    res.status(200).json({ data: notifications, status: true });
+    let sortedNotifs = []
+    if(notifications.length > 0){
+      sortedNotifs = notifications.sort((a, b) => b.createdAt - a.createdAt);
+    }
+    res.status(200).json({ data: sortedNotifs, status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
