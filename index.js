@@ -64,7 +64,7 @@ app.use("/api/records", recordRoutes);
 app.use("/api/dates", datesRoutes);
 app.use("/api/frequentQuestions", frequentQuestionsRoutes);
 app.use("/api/agora", agoraRoutes);
-app.use("/api/notif", notifRoutes);
+app.use("/api/notifications", notifRoutes);
 
 const PORT = process.env.PORT || 4000;
 
