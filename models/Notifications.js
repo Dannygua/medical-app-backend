@@ -20,6 +20,11 @@ const NotificationSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       required: false,
     },
+    isRead: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
   },
   {
     timestamps: true,

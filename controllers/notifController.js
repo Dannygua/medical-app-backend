@@ -28,4 +28,25 @@ const createNotification = async (req, res) => {
   }
 };
 
-export { createNotification, notificationsByReceiver };
+
+
+const readNotification = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const notifExist = await Notification.findById(id);
+
+    if (!notifExist) {
+      const error = new Error("Notificación no encontrada");
+      return res.status(401).json({ msg: error.message });
+    }
+
+    notifExist.isRead = true
+    const notifstored = await notifExist.save();
+    res.status(200).json({ msg: notifstored, status: true });
+
+  } catch (error) {
+    res.status(404).json({ msg: "El id que ingresaste no es valido" });
+  }
+};
+
+export { createNotification, notificationsByReceiver, readNotification };

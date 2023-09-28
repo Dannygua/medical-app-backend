@@ -8,6 +8,7 @@ import datesRoutes from "./routes/datesRoutes.js";
 import frequentQuestionsRoutes from "./routes/frequentQuestionsRoutes.js";
 import agoraRoutes from "./routes/agoraRoutes.js";
 import notifRoutes from "./routes/notifRoutes.js";
+import simulationsRoutes from "./routes/simulationsRoutes.js";
 
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -59,6 +60,7 @@ app.use("/api/dates", datesRoutes);
 app.use("/api/frequentQuestions", frequentQuestionsRoutes);
 app.use("/api/agora", agoraRoutes);
 app.use("/api/notifications", notifRoutes);
+app.use("/api/simulations", simulationsRoutes);
 
 const PORT = process.env.PORT || 4000;
 
