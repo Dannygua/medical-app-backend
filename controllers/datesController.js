@@ -243,9 +243,10 @@ const getLastMeasuresBy = async (req, res) => {
 
 
 const storeCall = async (req, res) => {
+  console.log('haz algo !!!')
   // Recibe y procesa la notificación del webhook
-  const videoData = req.body; // Supongamos que Video SDK envía datos en formato JSON
-  console.log('videoData', videoData)
+  //const videoData = req.body; // Supongamos que Video SDK envía datos en formato JSON
+  //console.log('videoData', videoData)
   // Guarda el video o realiza acciones adicionales según tus necesidades
   // Ejemplo: guardar el video en el servidor
   // ...

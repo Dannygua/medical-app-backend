@@ -20,5 +20,5 @@ router.get("/datesrecent", checkAuth, getDatesRecent);
 router.get("/byPatient/:id", checkAuth, getDatesByPatient);
 router.delete("/:id", checkAuth, deleteDate)
 router.get("/lastMeasuresBy/:id",  checkAuth, getLastMeasuresBy)
-router.post('/storeCall', checkAuth, storeCall)
+router.get('/storeCall', storeCall)
 export default router;
