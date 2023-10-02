@@ -9,6 +9,7 @@ import {
   deleteDate,
   getLastMeasuresBy,
   storeCall,
+  getDateById,
 } from "../controllers/datesController.js";
 
 const router = express.Router();
@@ -21,4 +22,5 @@ router.get("/byPatient/:id", checkAuth, getDatesByPatient);
 router.delete("/:id", checkAuth, deleteDate)
 router.get("/lastMeasuresBy/:id",  checkAuth, getLastMeasuresBy)
 router.get('/storeCall', storeCall)
+router.get('/:id', checkAuth, getDateById)
 export default router;

@@ -55,8 +55,7 @@ const getDatesByEspecialist = async (req, res) => {
   try {
     const dates = await DateModel.find({
       idespecialist: new mongoose.Types.ObjectId(id),
-    })
-      .populate('record')
+    }).populate("record");
     res.status(200).json({ data: dates, status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
@@ -84,6 +83,7 @@ const editDates = async (req, res) => {
       date.comments = req.body.comments || date.comments;
       date.recipe = req.body.recipe || date.recipe;
       date.callUrl = req.body.callUrl || date.callUrl;
+      date.callId = req.body.callId || date.callId;
       const datestored = await date.save();
 
       const existPatient = await User.find({
@@ -147,21 +147,21 @@ const getDatesByPatient = async (req, res) => {
     if (!fp) {
       const dates = await DateModel.find({
         idpatient: new mongoose.Types.ObjectId(id),
-      }).populate('record')
+      }).populate("record");
 
       res.status(200).json({ data: dates, status: true });
     } else {
       const dates = await DateModel.find({
         idpatient: new mongoose.Types.ObjectId(id),
-      }).populate('record').populate('idespecialist');
+      })
+        .populate("record")
+        .populate("idespecialist");
       res.status(200).json({ data: dates, status: true });
     }
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
 };
-
-
 
 const deleteDate = async (req, res) => {
   const { id } = req.params;
@@ -173,36 +173,36 @@ const deleteDate = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
-    await DateModel.deleteOne({ _id: id })
-    res.status(200).json({ msg: "Cita eliminada exitosamente", status: true })
-
+    await DateModel.deleteOne({ _id: id });
+    res.status(200).json({ msg: "Cita eliminada exitosamente", status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
-}
-
-
+};
 
 const getLastMeasuresBy = async (req, res) => {
   const { id } = req.params;
   try {
     const dates = await DateModel.find({
       idpatient: new mongoose.Types.ObjectId(id),
-    }).populate('record');
+    }).populate("record");
 
     let response = false;
-    const datesWithRecord = dates.filter((date) => 'record' in date)
-    console.log('CAMBIO!')
+    const datesWithRecord = dates.filter((date) => "record" in date);
+    console.log("CAMBIO!");
 
     if (datesWithRecord.length > 0) {
-      const datesWithFilledRecord = datesWithRecord.filter((date) => date.record !== undefined)
+      const datesWithFilledRecord = datesWithRecord.filter(
+        (date) => date.record !== undefined
+      );
       if (datesWithFilledRecord.length > 0) {
-        const datesWithNutriInfo = datesWithFilledRecord.filter((date) => 'nutriInfo' in date.record)
+        const datesWithNutriInfo = datesWithFilledRecord.filter(
+          (date) => "nutriInfo" in date.record
+        );
 
         if (datesWithNutriInfo.length > 0) {
-
           // Paso 1: Parsea las fechas a objetos Date
-          datesWithNutriInfo.forEach(objeto => {
+          datesWithNutriInfo.forEach((objeto) => {
             objeto.start = new Date(objeto.start);
           });
 
@@ -220,15 +220,15 @@ const getLastMeasuresBy = async (req, res) => {
               waistMeasurement,
               hipMeasurement,
               legsMeasurement,
-            } = registroMasActual
+            } = registroMasActual;
             response = {
               neckMeasurement,
               armsMeasurement,
               backMeasurement,
               waistMeasurement,
               hipMeasurement,
-              legsMeasurement
-            }
+              legsMeasurement,
+            };
           }
         }
       }
@@ -239,11 +239,27 @@ const getLastMeasuresBy = async (req, res) => {
   }
 };
 
-
-
+const getDateById = async () => {
+  const { id } = req.params;
+  try {
+    const dateExist = await DateModel.findById(id);
+    if (!dateExist) {
+      const error = new Error("Cita no encontrado");
+      return res.status(401).json({ msg: error.message });
+    }
+    /*
+    const dates = await DateModel.find({
+      _id: new mongoose.Types.ObjectId(id),
+    }).populate("record");
+    */
+    res.status(200).json({ data: dateExist, status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
 
 const storeCall = async (req, res) => {
-  console.log('haz algo !!!')
+  console.log("haz algo !!!");
   // Recibe y procesa la notificación del webhook
   //const videoData = req.body; // Supongamos que Video SDK envía datos en formato JSON
   //console.log('videoData', videoData)
@@ -252,7 +268,9 @@ const storeCall = async (req, res) => {
   // ...
 
   // Devuelve una respuesta al webhook
-  res.status(200).json({ msg: 'Notificación del webhook recibida y procesada con éxito.'});
+  res
+    .status(200)
+    .json({ msg: "Notificación del webhook recibida y procesada con éxito." });
 };
 
 export {
@@ -263,5 +281,6 @@ export {
   getDatesRecent,
   deleteDate,
   getLastMeasuresBy,
-  storeCall
+  storeCall,
+  getDateById
 };

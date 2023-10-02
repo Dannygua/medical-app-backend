@@ -47,6 +47,10 @@ const DateSchema = mongoose.Schema(
       type: String,
       default: ''
     },
+    callId: {
+      type: String,
+      default: ''
+    }
   },
 
   {
