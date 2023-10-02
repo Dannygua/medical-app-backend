@@ -239,7 +239,7 @@ const getLastMeasuresBy = async (req, res) => {
   }
 };
 
-const getDateById = async () => {
+const getDateById = async (req, res) => {
   const { id } = req.params;
   try {
     const dateExist = await DateModel.findById(id);
