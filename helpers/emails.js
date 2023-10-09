@@ -1,5 +1,20 @@
 import sendEmail from "../utils/sendEmail.js";
 
+
+export const testEmail = async () => {
+  try {
+    await sendEmail({
+      //the client email
+      to: 'pablotrujilloelo@gmail.com',
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      templateId: 'd-c7e16fef22d04cb2aa628d4acec3b990',
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const emailForgetPassword = async (datos) => {
   const { firstname, email, token } = datos;
   console.log(email);

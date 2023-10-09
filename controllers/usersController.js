@@ -6,6 +6,7 @@ import {
   emailForgetPassword,
   emailInfo,
   emailWarning,
+  testEmail,
 } from "../helpers/emails.js";
 import User from "../models/Users.js";
 
@@ -505,6 +506,17 @@ const sendWarning = async (req, res) => {
 };
 
 
+const sendTest = async (req, res) => {
+  
+  try {
+    testEmail();
+    res.status(200).json({ msg: "Correo enviado exitosamente", status: true });
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 
 const searchPatients = async (req, res) => {
   const { search } = req.query;
@@ -590,5 +602,6 @@ export {
   ChangeState,
   sendWarning,
   searchPatients,
-  searchSpecialists
+  searchSpecialists,
+  sendTest
 };

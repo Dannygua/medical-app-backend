@@ -22,9 +22,11 @@ import {
   ChangeState,
   sendWarning,
   searchPatients,
-  searchSpecialists
+  searchSpecialists,
+  sendTest
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
+import { testEmail } from "../helpers/emails.js";
 
 const router = express.Router();
 
@@ -50,5 +52,7 @@ router.post("/sendWarning", sendWarning);
 
 router.get("/searchPatients", searchPatients)
 router.get("/searchSpecialists", searchSpecialists)
+
+router.get("/sendTest", sendTest)
 
 export default router;
