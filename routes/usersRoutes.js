@@ -53,6 +53,6 @@ router.post("/sendWarning", sendWarning);
 router.get("/searchPatients", searchPatients)
 router.get("/searchSpecialists", searchSpecialists)
 
-router.get("/sendTest", sendTest)
+router.post("/sendTest", sendTest)
 
 export default router;

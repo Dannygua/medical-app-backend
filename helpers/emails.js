@@ -1,7 +1,10 @@
 import sendEmail from "../utils/sendEmail.js";
 
 
-export const testEmail = async () => {
+export const testEmail = async (datos) => {
+
+  const { code } = datos; 
+
   try {
     await sendEmail({
       //the client email
@@ -9,6 +12,7 @@ export const testEmail = async () => {
       //sendGrid sender id
       from: "drbariatrico250@gmail.com",
       templateId: 'd-c7e16fef22d04cb2aa628d4acec3b990',
+      code
     });
   } catch (error) {
     console.log(error);

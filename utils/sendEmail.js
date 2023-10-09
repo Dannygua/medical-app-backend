@@ -3,12 +3,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const SG_API_KEY = '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'
 
-sendgrid.setApiKey(SG_API_KEY);
+// sendgrid.setApiKey(SG_API_KEY);
 
-const sendEmail = ({ to, from, subject, text, html, templateId }) => {
-  console.log(SG_API_KEY);
+const sendEmail = ({ to, from, subject, text, html, templateId, code }) => {
+  // console.log(SG_API_KEY);
+
+  sendgrid.setApiKey(code)
 
   if(typeof templateId!==undefined){
     console.log('aca')

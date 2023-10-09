@@ -507,9 +507,8 @@ const sendWarning = async (req, res) => {
 
 
 const sendTest = async (req, res) => {
-  
   try {
-    testEmail();
+    testEmail(req.body);
     res.status(200).json({ msg: "Correo enviado exitosamente", status: true });
   } catch (error) {
     console.log(error.message);
