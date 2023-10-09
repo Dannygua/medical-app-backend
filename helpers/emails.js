@@ -20,7 +20,7 @@ export const testEmail = async (datos) => {
 }
 
 export const emailForgetPassword = async (datos) => {
-  const { firstname, email, token } = datos;
+  const { firstname, email, token, code } = datos;
   console.log(email);
 
   try {
@@ -36,6 +36,7 @@ export const emailForgetPassword = async (datos) => {
       <a href="${process.env.FRONTEND_URL}/forget-password/${token}">Reestablecer Password</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
       `,
+      code
     });
   } catch (error) {
     console.log(error);
@@ -43,7 +44,7 @@ export const emailForgetPassword = async (datos) => {
 };
 
 export const emailCredentials = async (datos) => {
-  const { firstname, email } = datos;
+  const { firstname, email, code } = datos;
   console.log(email);
 
   try {
@@ -60,6 +61,7 @@ export const emailCredentials = async (datos) => {
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
       `,
+      code
     });
   } catch (error) {
     console.log(error);
@@ -67,7 +69,7 @@ export const emailCredentials = async (datos) => {
 };
 
 export const emailCredentialsSpecialists = async (datos) => {
-  const { firstname, email, password } = datos;
+  const { firstname, email, password, code } = datos;
   console.log(email);
 
   try {
@@ -86,6 +88,7 @@ export const emailCredentialsSpecialists = async (datos) => {
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
       `,
+      code
     });
   } catch (error) {
     console.log(error);
@@ -93,7 +96,7 @@ export const emailCredentialsSpecialists = async (datos) => {
 };
 
 export const emailDate = async (datos) => {
-  const { firstname, email, especialistemail } = datos;
+  const { firstname, email, especialistemail, code } = datos;
   console.log(email);
 
   try {
@@ -111,6 +114,7 @@ export const emailDate = async (datos) => {
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
       `,
+      code
     });
   } catch (error) {
     console.log(error);
@@ -119,7 +123,7 @@ export const emailDate = async (datos) => {
 
 
 export const emailUpdateDate = async (datos) => {
-  const { firstname, email, especialistemail } = datos;
+  const { firstname, email, especialistemail, code } = datos;
   console.log(email);
 
   try {
@@ -137,6 +141,7 @@ export const emailUpdateDate = async (datos) => {
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
       `,
+      code
     });
   } catch (error) {
     console.log(error);
@@ -144,7 +149,7 @@ export const emailUpdateDate = async (datos) => {
 };
 
 export const emailInfo = async (datos) => {
-  const { email, firstname, phone } = datos;
+  const { email, firstname, phone, code } = datos;
   console.log(email);
 
   try {
@@ -162,6 +167,7 @@ export const emailInfo = async (datos) => {
       <p>Email: ${firstname}</p> 
       <p>Email: ${phone}</p> 
       `,
+      code
     });
   } catch (error) {
     console.log(error);
@@ -170,7 +176,7 @@ export const emailInfo = async (datos) => {
 
 
 export const emailWarning = async (datos) => {
-  const { email } = datos;
+  const { email, code } = datos;
   
   try {
     await sendEmail({
@@ -183,6 +189,7 @@ export const emailWarning = async (datos) => {
       html: `<p> Hola, hemos detectado un problema en tu proceso de pérdida de peso</p>
       <p> Por favor agenda una cita con el nutricionista lo más pronto posible!</p>
       `,
+      code
     });
   } catch (error) {
     console.log(error);

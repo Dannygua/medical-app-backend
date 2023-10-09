@@ -4,7 +4,7 @@ import User from "../models/Users.js";
 import mongoose from "mongoose";
 
 const createDate = async (req, res) => {
-  const { idpatient, idespecialist } = req.body;
+  const { idpatient, idespecialist, code } = req.body;
 
   try {
     const existPatient = await User.find({
@@ -40,6 +40,7 @@ const createDate = async (req, res) => {
       firstname: existPatient[0].firstname,
       email: existPatient[0].email,
       especialistemail: existEspecialist[0].email,
+      code
     });
 
     res.status(200).json({ msg: "Cita agendada correctamente", status: true });
@@ -65,6 +66,7 @@ const getDatesByEspecialist = async (req, res) => {
 const editDates = async (req, res) => {
   const { id } = req.params;
   const { user } = req;
+  const { code } = req.body;
   try {
     const date = await DateModel.findById(id);
 
@@ -109,6 +111,7 @@ const editDates = async (req, res) => {
         firstname: existPatient[0].firstname,
         email: existPatient[0].email,
         especialistemail: existEspecialist[0].email,
+        code
       });
 
       res.status(200).json({ msg: datestored, status: true });

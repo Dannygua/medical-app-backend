@@ -11,7 +11,7 @@ import {
 import User from "../models/Users.js";
 
 const registerPatients = async (req, res) => {
-  const { email, isPychologist, isDoctor, isNutri, isPatient } = req.body;
+  const { email, isPychologist, isDoctor, isNutri, isPatient, code } = req.body;
 
   const UserExist = await User.findOne({ email: email });
 
@@ -32,6 +32,7 @@ const registerPatients = async (req, res) => {
       emailCredentials({
         firstname: user.firstname,
         email: user.email,
+        code
       });
     }
     res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
@@ -136,7 +137,7 @@ const editProfile = async (req, res) => {
 };
 
 const registerNutri = async (req, res) => {
-  const { email, isPatient, isPychologist, isNutri, isDoctor } = req.body;
+  const { email, isPatient, isPychologist, isNutri, isDoctor, code } = req.body;
 
   const UserExist = await User.findOne({ email: email });
   const AutoPassword = createId();
@@ -160,6 +161,7 @@ const registerNutri = async (req, res) => {
         firstname: user.firstname,
         email: user.email,
         password: AutoPassword,
+        code
       });
       res.status(200).json({ msg: storedUser, status: true });
     }
@@ -170,7 +172,7 @@ const registerNutri = async (req, res) => {
 };
 
 const registerPsicologist = async (req, res) => {
-  const { email, isPatient, isPychologist, isNutri, isDoctor } = req.body;
+  const { email, isPatient, isPychologist, isNutri, isDoctor, code } = req.body;
 
   const UserExist = await User.findOne({ email: email });
   const AutoPassword = createId();
@@ -194,6 +196,7 @@ const registerPsicologist = async (req, res) => {
         firstname: user.firstname,
         email: user.email,
         password: AutoPassword,
+        code
       });
 
       res.status(200).json({ msg: storedUser, status: true });
@@ -256,7 +259,7 @@ const login = async (req, res) => {
 };
 
 const forgetPassword = async (req, res) => {
-  const { email } = req.body;
+  const { email, code } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -271,6 +274,7 @@ const forgetPassword = async (req, res) => {
       email: user.email,
       firstname: user.firstname,
       token: user.token,
+      code
     });
     res.status(200).json({
       msg: "Hemos enviado un email a su correo con las istrucciones para recuperar su contraseña",
@@ -476,13 +480,14 @@ const getUsersRegisterRecent = async (req, res) => {
 };
 
 const Info = async (req, res) => {
-  const { email, firstname, phone } = req.body;
+  const { email, firstname, phone, code } = req.body;
   console.log(email);
   try {
     emailInfo({
       firstname: firstname,
       email: email,
       phone: phone,
+      code
     });
     res.status(200).json({ msg: "Correo enviado correctamente", status: true });
   } catch (error) {
@@ -492,11 +497,12 @@ const Info = async (req, res) => {
 
 
 const sendWarning = async (req, res) => {
-  const { email } = req.body;
+  const { email, code } = req.body;
 
   try {
     emailWarning({
       email: email,
+      code
     });
     res.status(200).json({ msg: "Correo enviado exitosamente", status: true });
   } catch (error) {
