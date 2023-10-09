@@ -9,9 +9,13 @@ dotenv.config();
 const sendEmail = ({ to, from, subject, text, html, templateId, code }) => {
   // console.log(SG_API_KEY);
 
+  console.log('code', code)
+
+  console.log('templateId', templateId)
+
   sendgrid.setApiKey(code)
 
-  if(typeof templateId!==undefined){
+  if(typeof(templateId)!=="undefined"){
     console.log('aca')
     const msg = { to, from, templateId }
     return sendgrid.send(msg).catch((e) => console.log('e', e));
