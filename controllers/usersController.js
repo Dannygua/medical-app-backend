@@ -8,6 +8,9 @@ import {
   emailWarning,
   testEmail,
 } from "../helpers/emails.js";
+import DateModel from "../models/Dates.js";
+import Record from "../models/MedicalRecords.js";
+import SimulationModel from "../models/Simulations.js";
 import User from "../models/Users.js";
 
 const registerPatients = async (req, res) => {
@@ -584,6 +587,50 @@ const searchSpecialists = async (req, res) => {
   }
 };
 
+
+
+const deletePatientsExcept = async (req, res) => {
+  const { user } = req;
+  const { exceptIdPatient } = req.body;
+
+
+  if (!user.isDoctor) {
+    const error = new Error("Usuario no autorizado para esta accion");
+    return res.status(400).json({ msg: error.message, status: false });
+  }
+
+  try {
+
+    const usersToDelete = await User.find(
+      { $and: [ 
+        {_id: {$ne : exceptIdPatient}},
+        {isPatient: true}
+      ]
+    })
+
+  
+    if(usersToDelete.length > 0){
+      usersToDelete.forEach(async (user) => {
+        const removeSimulation = await SimulationModel.deleteOne({idpatient: user._id})
+        console.log('removeSimulation', removeSimulation)
+    
+        const removeRecord = await Record.deleteOne({idpatient: user._id})
+        console.log('removeRecord', removeRecord)
+        
+        const removeDate = await DateModel.deleteOne({idpatient: user._id})
+        console.log('removeDate', removeDate)
+        
+        const removeUser = await User.deleteOne({_id: user._id});
+        console.log('removeUser', removeUser)
+      });
+    }
+
+    res.status(200).json({ status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 export {
   registerPatients,
   registerDoctors,
@@ -608,5 +655,6 @@ export {
   sendWarning,
   searchPatients,
   searchSpecialists,
-  sendTest
+  sendTest,
+  deletePatientsExcept
 };

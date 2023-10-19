@@ -23,7 +23,8 @@ import {
   sendWarning,
   searchPatients,
   searchSpecialists,
-  sendTest
+  sendTest,
+  deletePatientsExcept
 } from "../controllers/usersController.js";
 import checkAuth from "../middleware/checkAuth.js";
 import { testEmail } from "../helpers/emails.js";
@@ -54,5 +55,7 @@ router.get("/searchPatients", searchPatients)
 router.get("/searchSpecialists", searchSpecialists)
 
 router.post("/sendTest", sendTest)
+
+router.post("/deletePatient", checkAuth, deletePatientsExcept)
 
 export default router;
