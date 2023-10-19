@@ -1,4 +1,3 @@
-
 import express from "express";
 import conectarDB from "./config/bd.js";
 import dotenv from "dotenv";
@@ -13,13 +12,16 @@ import simulationsRoutes from "./routes/simulationsRoutes.js";
 import cors from "cors";
 import bodyParser from "body-parser";
 import multer from "multer";
+import { CronJob } from "cron";
+import Notification from "./models/Notifications.js";
+import DateModel from "./models/Dates.js";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
 const upload = multer(); // config
 const app = express();
 app.use(express.json());
 app.use(upload.any());
-
 
 /*FIREBASE
 admin.initializeApp({
@@ -39,8 +41,6 @@ admin.initializeApp({
 });
 END FIREBASE*/
 
-
-
 conectarDB();
 
 const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL_LOCAL];
@@ -48,7 +48,6 @@ const whitelist = [process.env.FRONTEND_URL, process.env.FRONTEND_URL_LOCAL];
 const corsOptions = {
   origin: function (origin, callback) {
     callback(null, true);
-
   },
 };
 
@@ -61,6 +60,127 @@ app.use("/api/frequentQuestions", frequentQuestionsRoutes);
 app.use("/api/agora", agoraRoutes);
 app.use("/api/notifications", notifRoutes);
 app.use("/api/simulations", simulationsRoutes);
+
+const supaNotif = () => {
+  // SUPABASE INTEGRATION
+  // SEND MESSAGE TO UPDATE NOTIFICATIONS
+  const clientB = createClient(
+    "https://oqcxpijzaddmvyzlslam.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xY3hwaWp6YWRkbXZ5emxzbGFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTQ0MDMyMDgsImV4cCI6MjAwOTk3OTIwOH0.AwrfE3NvI5pA46ThsDQ0BN7atamyPQmm_Kk8P7Usl48"
+  );
+  const channelB = clientB.channel("room-1");
+  channelB.subscribe((status) => {
+    if (status === "SUBSCRIBED") {
+      channelB.send({
+        type: "broadcast",
+        event: "test",
+        payload: {
+          message: "UPDATE NOTIFICATIONS",
+        },
+      });
+    }
+  });
+  // END SUPABASE INTEGRATION
+};
+
+const job = new CronJob(
+  "*/5 * * * *	",
+  async function () {
+    console.log(
+      "Ha llegado el momento de verificar si una cita está próxima a llegar"
+    );
+    try {
+      const ahora = new Date(); // Obtiene la hora actual
+      console.log("ahora", ahora);
+      /* Establece la hora de inicio del día actual (a las 00:00:00)
+      const inicioDelDia = new Date(
+        ahora.getFullYear(),
+        ahora.getMonth(),
+        ahora.getDate()
+      );
+
+      // Establece la hora de fin del día actual (a las 23:59:59)
+      const finDelDia = new Date(
+        ahora.getFullYear(),
+        ahora.getMonth(),
+        ahora.getDate(),
+        23,
+        59,
+        59
+      );
+      */
+
+      
+      // Calcula la hora futura (5 horas y 5 minutos después)
+      // const horaFutura = new Date(ahora.getTime() + (5 * 60 + 5) * 60000); // 5 horas y 5 minutos en milisegundos
+      const horaFutura = new Date(ahora.getTime() + 5 * 60000); // 5 minutos en milisegundos
+
+      const comingDates = await DateModel.find({
+        start:  horaFutura.toISOString()
+      })
+        .populate("idpatient")
+        .populate("idespecialist");
+
+      console.log("comingDates", comingDates);
+
+      if (comingDates.length > 0) {
+        const baseTitle = "RECORDATORIO: En 5 minutos tienes una cita con: ";
+
+        comingDates.forEach(async (comingDate) => {
+          const titles = {
+            toSpecialist:
+              baseTitle +
+              comingDate.idpatient.firstname +
+              " " +
+              comingDate.idpatient.lastname,
+            toPatient:
+              baseTitle +
+              comingDate.idespecialist.firstname +
+              " " +
+              comingDate.idespecialist.lastname,
+          };
+
+          const senders = {
+            toSpecialist: comingDate.idpatient._id,
+            toPatient: comingDate.idespecialist._id,
+          };
+
+          const receivers = {
+            toSpecialist: comingDate.idespecialist._id,
+            toPatient: comingDate.idpatient._id,
+          };
+
+          const notificationToPatient = new Notification({
+            title: titles.toPatient,
+            senderId: senders.toPatient,
+            receiverId: receivers.toPatient,
+            refId: comingDate._id,
+          });
+          await notificationToPatient.save();
+
+          console.log("Notificacion para el paciente creada con exito");
+          supaNotif();
+
+          const notificationToSpecialist = new Notification({
+            title: titles.toSpecialist,
+            senderId: senders.toSpecialist,
+            receiverId: receivers.toSpecialist,
+            refId: comingDate._id,
+          });
+          await notificationToSpecialist.save();
+          console.log("Notificacion para el especialista creada con exito");
+          supaNotif();
+        });
+      }
+    } catch (error) {
+      console.log(error.message);
+      console.log("ALGO SALIÓ MAL");
+    }
+  },
+  null,
+  true,
+  "America/Guayaquil"
+);
 
 const PORT = process.env.PORT || 4000;
 
