@@ -182,8 +182,8 @@ const deleteDate = async (req, res) => {
 
     if(findDate){
       emailCancelDate({
-        email: idpatient,
-        especialistemail: idespecialist.email,
+        email: findDate.idpatient.email,
+        especialistemail: findDate.idespecialist.email,
         code,
         date,
       });
