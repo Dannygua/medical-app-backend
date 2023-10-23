@@ -1,4 +1,8 @@
-import { emailCancelDate, emailDate, emailUpdateDate } from "../helpers/emails.js";
+import {
+  emailCancelDate,
+  emailDate,
+  emailUpdateDate,
+} from "../helpers/emails.js";
 import DateModel from "../models/Dates.js";
 import User from "../models/Users.js";
 import mongoose from "mongoose";
@@ -40,7 +44,7 @@ const createDate = async (req, res) => {
       firstname: existPatient[0].firstname,
       email: existPatient[0].email,
       especialistemail: existEspecialist[0].email,
-      code
+      code,
     });
 
     res.status(200).json({ msg: "Cita agendada correctamente", status: true });
@@ -111,7 +115,7 @@ const editDates = async (req, res) => {
         firstname: existPatient[0].firstname,
         email: existPatient[0].email,
         especialistemail: existEspecialist[0].email,
-        code
+        code,
       });
 
       res.status(200).json({ msg: datestored, status: true });
@@ -169,26 +173,24 @@ const getDatesByPatient = async (req, res) => {
 const deleteDate = async (req, res) => {
   const { id } = req.params;
   const { code } = req.body;
- 
+
   try {
-    const date = await DateModel.findById(id);
+    const date = await DateModel.findById(id)
+      .populate("idespecialist")
+      .populate("idpatient");
 
     if (!date) {
       const error = new Error("Cita no encontrada");
       return res.status(401).json({ msg: error.message });
     }
 
-    const findDate = await DateModel.find({_id: id}).populate('idespecialist').populate('idpatient')
-
-    if(findDate){
-      emailCancelDate({
-        email: findDate.idpatient.email,
-        especialistemail: findDate.idespecialist.email,
-        code,
-        date,
-      });
-      await DateModel.deleteOne({ _id: id });
-    }
+    emailCancelDate({
+      email: date.idpatient.email,
+      especialistemail: date.idespecialist.email,
+      code,
+      date,
+    });
+    await DateModel.deleteOne({ _id: id });
 
     res.status(200).json({ msg: "Cita cancelada exitosamente", status: true });
   } catch (error) {
@@ -298,5 +300,5 @@ export {
   deleteDate,
   getLastMeasuresBy,
   storeCall,
-  getDateById
+  getDateById,
 };
