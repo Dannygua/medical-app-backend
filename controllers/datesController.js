@@ -1,4 +1,4 @@
-import { emailDate, emailUpdateDate } from "../helpers/emails.js";
+import { emailCancelDate, emailDate, emailUpdateDate } from "../helpers/emails.js";
 import DateModel from "../models/Dates.js";
 import User from "../models/Users.js";
 import mongoose from "mongoose";
@@ -168,6 +168,8 @@ const getDatesByPatient = async (req, res) => {
 
 const deleteDate = async (req, res) => {
   const { id } = req.params;
+  const { code } = req.body;
+ 
   try {
     const date = await DateModel.findById(id);
 
@@ -177,7 +179,35 @@ const deleteDate = async (req, res) => {
     }
 
     await DateModel.deleteOne({ _id: id });
-    res.status(200).json({ msg: "Cita eliminada exitosamente", status: true });
+
+    const existPatient = await User.find({
+      _id: date.idpatient,
+      isPatient: true,
+    });
+    const existEspecialist = await User.find({
+      _id: date.idespecialist,
+      $or: [{ isPychologist: true }, { isNutri: true }, { isDoctor: true }],
+    });
+
+    if (!existPatient[0]) {
+      const error = new Error("Paciente no registrado");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
+    if (!existEspecialist[0]) {
+      const error = new Error("Especialista no registrado");
+      return res.status(400).json({ msg: error.message, status: false });
+    }
+
+    emailCancelDate({
+      firstname: existPatient[0].firstname,
+      email: existPatient[0].email,
+      especialistemail: existEspecialist[0].email,
+      code,
+      date,
+    });
+
+    res.status(200).json({ msg: "Cita cancelada exitosamente", status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }

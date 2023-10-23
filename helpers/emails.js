@@ -148,6 +148,35 @@ export const emailUpdateDate = async (datos) => {
   }
 };
 
+
+export const emailCancelDate = async (datos) => {
+  const { email, especialistemail, code, date } = datos;
+  console.log(email);
+
+  try {
+    const parsedDate = new Date(date.start)
+    const humanDate = parsedDate.toDateString()
+
+    await sendEmail({
+      //the client email
+      to: [`${email}`, `${especialistemail}`],
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      subject: "Tu cita ha sido cancelada",
+      text: "Notificación de cita",
+      html: `<p>Tu cita del ${humanDate} ha sido cancelada</p>
+      <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciales de seguridad </p>
+      <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
+      <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
+      <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
+      `,
+      code
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const emailInfo = async (datos) => {
   const { email, firstname, phone, code } = datos;
   console.log(email);
