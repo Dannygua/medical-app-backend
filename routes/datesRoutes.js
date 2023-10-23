@@ -19,7 +19,7 @@ router.get("/byEspecialist/:id", checkAuth, getDatesByEspecialist);
 router.put("/:id", checkAuth, editDates);
 router.get("/datesrecent", checkAuth, getDatesRecent);
 router.get("/byPatient/:id", checkAuth, getDatesByPatient);
-router.post("/:id", checkAuth, deleteDate)
+router.post("/delete/:id", checkAuth, deleteDate)
 router.get("/lastMeasuresBy/:id",  checkAuth, getLastMeasuresBy)
 router.get('/storeCall', storeCall)
 router.get('/:id', checkAuth, getDateById)

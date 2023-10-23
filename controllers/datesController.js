@@ -178,34 +178,17 @@ const deleteDate = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
-    await DateModel.deleteOne({ _id: id });
+    const findDate = await DateModel.find({_id: id}).populate('idespecialist').populate('idpatient')
 
-    const existPatient = await User.find({
-      _id: date.idpatient,
-      isPatient: true,
-    });
-    const existEspecialist = await User.find({
-      _id: date.idespecialist,
-      $or: [{ isPychologist: true }, { isNutri: true }, { isDoctor: true }],
-    });
-
-    if (!existPatient[0]) {
-      const error = new Error("Paciente no registrado");
-      return res.status(400).json({ msg: error.message, status: false });
+    if(findDate){
+      emailCancelDate({
+        email: idpatient,
+        especialistemail: idespecialist.email,
+        code,
+        date,
+      });
+      await DateModel.deleteOne({ _id: id });
     }
-
-    if (!existEspecialist[0]) {
-      const error = new Error("Especialista no registrado");
-      return res.status(400).json({ msg: error.message, status: false });
-    }
-
-    emailCancelDate({
-      firstname: existPatient[0].firstname,
-      email: existPatient[0].email,
-      especialistemail: existEspecialist[0].email,
-      code,
-      date,
-    });
 
     res.status(200).json({ msg: "Cita cancelada exitosamente", status: true });
   } catch (error) {
