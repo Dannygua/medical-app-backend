@@ -196,3 +196,24 @@ export const emailWarning = async (datos) => {
   }
 };
 
+
+export const emailNutriWarning = async (patientData, nutriEmail, code) => {
+  const { firstname, lastname } = patientData
+
+  try {
+    await sendEmail({
+      //the client email
+      to: [`${nutriEmail}`],
+      //sendGrid sender id
+      from: "drbariatrico250@gmail.com",
+      subject: "Un paciente ha registrado obesidad mórbida",
+      text: "Correo de advertencia",
+      html: `<p> Hola, hemos detectado un problema en el proceso de pérdida de peso de: ${firstname} ${lastname} </p>
+      <p> Por favor agenda una cita con el paciente lo más pronto posible!</p>
+      `,
+      code
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

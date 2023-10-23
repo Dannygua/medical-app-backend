@@ -5,6 +5,7 @@ import {
   emailCredentialsSpecialists,
   emailForgetPassword,
   emailInfo,
+  emailNutriWarning,
   emailWarning,
   testEmail,
 } from "../helpers/emails.js";
@@ -35,7 +36,7 @@ const registerPatients = async (req, res) => {
       emailCredentials({
         firstname: user.firstname,
         email: user.email,
-        code
+        code,
       });
     }
     res.status(200).json({ msg: "Usuario creado Correctamente", status: true });
@@ -88,7 +89,6 @@ const editUsers = async (req, res) => {
     userExist.notifToken = req.body.notifToken || userExist.notifToken;
     const userstored = await userExist.save();
     res.status(200).json({ msg: userstored, status: true });
-
   } catch (error) {
     res.status(404).json({ msg: "El id que ingresaste no es valido" });
   }
@@ -164,7 +164,7 @@ const registerNutri = async (req, res) => {
         firstname: user.firstname,
         email: user.email,
         password: AutoPassword,
-        code
+        code,
       });
       res.status(200).json({ msg: storedUser, status: true });
     }
@@ -199,7 +199,7 @@ const registerPsicologist = async (req, res) => {
         firstname: user.firstname,
         email: user.email,
         password: AutoPassword,
-        code
+        code,
       });
 
       res.status(200).json({ msg: storedUser, status: true });
@@ -252,7 +252,7 @@ const login = async (req, res) => {
       lastLoginDate: user.lastLoginDate,
       dates: user.dates || [],
       status: true,
-      bodyImages: user.bodyImages || []
+      bodyImages: user.bodyImages || [],
     });
     user.save();
   } else {
@@ -277,7 +277,7 @@ const forgetPassword = async (req, res) => {
       email: user.email,
       firstname: user.firstname,
       token: user.token,
-      code
+      code,
     });
     res.status(200).json({
       msg: "Hemos enviado un email a su correo con las istrucciones para recuperar su contraseña",
@@ -490,7 +490,7 @@ const Info = async (req, res) => {
       firstname: firstname,
       email: email,
       phone: phone,
-      code
+      code,
     });
     res.status(200).json({ msg: "Correo enviado correctamente", status: true });
   } catch (error) {
@@ -498,22 +498,33 @@ const Info = async (req, res) => {
   }
 };
 
-
 const sendWarning = async (req, res) => {
-  const { email, code } = req.body;
+  const { email, code, sendToNutri } = req.body;
 
   try {
     emailWarning({
       email: email,
-      code
+      code,
     });
+
+    let nutris = [];
+    if (sendToNutri) {
+      nutris = await User.find({ isNutri: true });
+    }
+
+    if (nutris.length > 0) {
+      const patient = User.find({ email: email });
+      if (patient.length > 0) {
+        nutris.map((nutri) => emailNutriWarning(patient[0], nutri.email, code));
+      }
+    }
+
     res.status(200).json({ msg: "Correo enviado exitosamente", status: true });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ msg: error.message, status: false });
   }
 };
-
 
 const sendTest = async (req, res) => {
   try {
@@ -525,11 +536,9 @@ const sendTest = async (req, res) => {
   }
 };
 
-
 const searchPatients = async (req, res) => {
   const { search } = req.query;
   try {
-
     const patients = await User.find({ isPatient: true }).populate({
       path: "dates",
       populate: {
@@ -541,7 +550,9 @@ const searchPatients = async (req, res) => {
       (sp) =>
         sp.firstname.toLowerCase().includes(search.toLowerCase()) ||
         sp.lastname.toLowerCase().includes(search.toLowerCase()) ||
-        (sp.firstname.toLowerCase() + " " + sp.lastname.toLowerCase()).includes(search.toLowerCase()) ||
+        (sp.firstname.toLowerCase() + " " + sp.lastname.toLowerCase()).includes(
+          search.toLowerCase()
+        ) ||
         sp.email.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -550,13 +561,14 @@ const searchPatients = async (req, res) => {
       return res.status(400).json({ msg: error.message, status: false });
     }
 
-    res.status(200).json({ status: true, search: search, data: filteredPatients });
+    res
+      .status(200)
+      .json({ status: true, search: search, data: filteredPatients });
     console.log(patients);
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
-}
-
+};
 
 const searchSpecialists = async (req, res) => {
   const { search } = req.query;
@@ -577,22 +589,23 @@ const searchSpecialists = async (req, res) => {
       (sp) =>
         sp.firstname.toLowerCase().includes(search.toLowerCase()) ||
         sp.lastname.toLowerCase().includes(search.toLowerCase()) ||
-        (sp.firstname.toLowerCase() + " " + sp.lastname.toLowerCase()).includes(search.toLowerCase()) ||
+        (sp.firstname.toLowerCase() + " " + sp.lastname.toLowerCase()).includes(
+          search.toLowerCase()
+        ) ||
         sp.email.toLowerCase().includes(search.toLowerCase())
     );
 
-    res.status(200).json({ search: search, status: true, data: filteredSpecialists });
+    res
+      .status(200)
+      .json({ search: search, status: true, data: filteredSpecialists });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
 };
 
-
-
 const deletePatientsExcept = async (req, res) => {
   const { user } = req;
   const { exceptIdPatient } = req.body;
-
 
   if (!user.isDoctor) {
     const error = new Error("Usuario no autorizado para esta accion");
@@ -600,28 +613,25 @@ const deletePatientsExcept = async (req, res) => {
   }
 
   try {
+    const usersToDelete = await User.find({
+      $and: [{ _id: { $ne: exceptIdPatient } }, { isPatient: true }],
+    });
 
-    const usersToDelete = await User.find(
-      { $and: [ 
-        {_id: {$ne : exceptIdPatient}},
-        {isPatient: true}
-      ]
-    })
-
-  
-    if(usersToDelete.length > 0){
+    if (usersToDelete.length > 0) {
       usersToDelete.forEach(async (user) => {
-        const removeSimulation = await SimulationModel.deleteOne({idpatient: user._id})
-        console.log('removeSimulation', removeSimulation)
-    
-        const removeRecord = await Record.deleteOne({idpatient: user._id})
-        console.log('removeRecord', removeRecord)
-        
-        const removeDate = await DateModel.deleteOne({idpatient: user._id})
-        console.log('removeDate', removeDate)
-        
-        const removeUser = await User.deleteOne({_id: user._id});
-        console.log('removeUser', removeUser)
+        const removeSimulation = await SimulationModel.deleteOne({
+          idpatient: user._id,
+        });
+        console.log("removeSimulation", removeSimulation);
+
+        const removeRecord = await Record.deleteOne({ idpatient: user._id });
+        console.log("removeRecord", removeRecord);
+
+        const removeDate = await DateModel.deleteOne({ idpatient: user._id });
+        console.log("removeDate", removeDate);
+
+        const removeUser = await User.deleteOne({ _id: user._id });
+        console.log("removeUser", removeUser);
       });
     }
 
@@ -656,5 +666,5 @@ export {
   searchPatients,
   searchSpecialists,
   sendTest,
-  deletePatientsExcept
+  deletePatientsExcept,
 };
