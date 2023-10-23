@@ -30,6 +30,17 @@ const createDate = async (req, res) => {
       return res.status(400).json({ msg: error.message, status: false });
     }
 
+    
+    const startInput = new Date(req.body.start);
+    // Verificar si ya existe una cita con la misma hora de inicio
+    const existingDate = await DateModel.findOne({ start: startInput });
+    if (existingDate) {
+      if(existingDate.idpatient !== existPatient[0]._id){
+        console.log("Ya existe una cita en ese horario.");
+        res.status(400).json({ msg: "Ya existe una cita en ese horario!", status: false });
+      }
+    }
+
     const date = new DateModel(req.body);
     await date.save();
 
