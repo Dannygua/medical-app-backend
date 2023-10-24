@@ -32,8 +32,11 @@ const createDate = async (req, res) => {
 
     
     const startInput = new Date(req.body.start);
+    console.log('startInput', startInput)
     // Verificar si ya existe una cita con la misma hora de inicio
-    const existingDate = await DateModel.findOne({ start: startInput });
+    const existingDate = await DateModel.findOne({ start: startInput.toISOString() });
+    console.log('existingDate', existingDate)
+    
     if (existingDate) {
       if(existingDate.idpatient !== existPatient[0]._id){
         console.log("Ya existe una cita en ese horario.");
