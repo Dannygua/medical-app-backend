@@ -2,8 +2,14 @@ import TestModel from "../models/Test.js";
 
 const getAllTests = async (req, res) => {
   try {
-    const tests = await TestModel.find();
-    res.status(200).json({ data: tests, status: true });
+    const justActive = req.query.justActive;
+    if (justActive === "true") {
+      const tests = await TestModel.find({ active: true });
+      res.status(200).json({ data: tests, status: true });
+    } else {
+      const tests = await TestModel.find();
+      res.status(200).json({ data: tests, status: true });
+    }
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
@@ -13,9 +19,7 @@ const createTest = async (req, res) => {
   try {
     const newTest = new TestModel(req.body);
     await newTest.save();
-    res
-      .status(200)
-      .json({ msg: "Exámen creado correctamente", status: true });
+    res.status(200).json({ msg: "Exámen creado correctamente", status: true });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ msg: error.message, status: false });
@@ -33,6 +37,8 @@ const updateTest = async (req, res) => {
     }
 
     testExist.name = req.body.name || testExist.name;
+    testExist.active = 'active' in req.body ? req.body.active : testExist.active
+
     const testStored = await testExist.save();
 
     res.status(200).json({ msg: testStored, status: true });
