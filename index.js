@@ -8,6 +8,7 @@ import frequentQuestionsRoutes from "./routes/frequentQuestionsRoutes.js";
 import agoraRoutes from "./routes/agoraRoutes.js";
 import notifRoutes from "./routes/notifRoutes.js";
 import simulationsRoutes from "./routes/simulationsRoutes.js";
+import testsRoutes from "./routes/testsRoutes.js"
 
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -60,6 +61,7 @@ app.use("/api/frequentQuestions", frequentQuestionsRoutes);
 app.use("/api/agora", agoraRoutes);
 app.use("/api/notifications", notifRoutes);
 app.use("/api/simulations", simulationsRoutes);
+app.use("/api/tests", testsRoutes);
 
 const supaNotif = () => {
   // SUPABASE INTEGRATION
