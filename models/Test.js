@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const TestSchema = mongoose.Schema(
   {
     name: {
