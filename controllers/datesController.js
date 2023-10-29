@@ -71,11 +71,24 @@ const createDate = async (req, res) => {
 //Puede que no se use
 const getDatesByEspecialist = async (req, res) => {
   const { id } = req.params;
+  const fp = req.query.fp;
+  
   try {
-    const dates = await DateModel.find({
-      idespecialist: new mongoose.Types.ObjectId(id),
-    }).populate("record");
-    res.status(200).json({ data: dates, status: true });
+    if(!fp){
+      const dates = await DateModel.find({
+        idespecialist: new mongoose.Types.ObjectId(id),
+      }).populate("record");
+      
+      res.status(200).json({ data: dates, status: true });
+    }else{
+      const dates = await DateModel.find({
+        idespecialist: new mongoose.Types.ObjectId(id)  
+      }).populate("record")
+      .populate("idespecialist");
+      
+      res.status(200).json({ data: dates, status: true });
+    }
+   
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }

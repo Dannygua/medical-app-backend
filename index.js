@@ -86,7 +86,8 @@ const supaNotif = () => {
 };
 
 const job = new CronJob(
-  "*/5 * * * *	",
+  //"*/5 * * * *	",
+  "* * * * * *",
   async function () {
     console.log(
       "Ha llegado el momento de verificar si una cita está próxima a llegar"
@@ -116,7 +117,7 @@ const job = new CronJob(
       // Calcula la hora futura (5 horas y 5 minutos después)
       // const horaFutura = new Date(ahora.getTime() + (5 * 60 + 5) * 60000); // 5 horas y 5 minutos en milisegundos
       const horaFutura = new Date(ahora.getTime() + 5 * 60000); // 5 minutos en milisegundos
-
+      console.log('hora futura', horaFutura)
       const comingDates = await DateModel.find({
         start:  horaFutura.toISOString()
       })
