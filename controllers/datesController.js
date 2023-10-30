@@ -84,7 +84,7 @@ const getDatesByEspecialist = async (req, res) => {
       const dates = await DateModel.find({
         idespecialist: new mongoose.Types.ObjectId(id)  
       }).populate("record")
-      .populate("idespecialist");
+      .populate("idpatient");
       
       res.status(200).json({ data: dates, status: true });
     }
