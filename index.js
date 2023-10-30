@@ -63,7 +63,7 @@ app.use("/api/notifications", notifRoutes);
 app.use("/api/simulations", simulationsRoutes);
 app.use("/api/tests", testsRoutes);
 
-const supaNotif = () => {
+export const supaNotif = () => {
   // SUPABASE INTEGRATION
   // SEND MESSAGE TO UPDATE NOTIFICATIONS
   const clientB = createClient(

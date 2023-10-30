@@ -3,6 +3,7 @@ import {
   emailDate,
   emailUpdateDate,
 } from "../helpers/emails.js";
+import { supaNotif } from "../index.js";
 import DateModel from "../models/Dates.js";
 import User from "../models/Users.js";
 import mongoose from "mongoose";
@@ -30,17 +31,20 @@ const createDate = async (req, res) => {
       return res.status(400).json({ msg: error.message, status: false });
     }
 
-    
     const startInput = new Date(req.body.start);
-    console.log('startInput', startInput)
+    console.log("startInput", startInput);
     // Verificar si ya existe una cita con la misma hora de inicio
-    const existingDate = await DateModel.findOne({ start: startInput.toISOString() });
-    console.log('existingDate', existingDate)
-    
+    const existingDate = await DateModel.findOne({
+      start: startInput.toISOString(),
+    });
+    console.log("existingDate", existingDate);
+
     if (existingDate) {
-      if(existingDate.idpatient !== existPatient[0]._id){
+      if (existingDate.idpatient !== existPatient[0]._id) {
         console.log("Ya existe una cita en ese horario.");
-        res.status(400).json({ msg: "Ya existe una cita en ese horario!", status: false });
+        res
+          .status(400)
+          .json({ msg: "Ya existe una cita en ese horario!", status: false });
       }
     }
 
@@ -72,23 +76,23 @@ const createDate = async (req, res) => {
 const getDatesByEspecialist = async (req, res) => {
   const { id } = req.params;
   const fp = req.query.fp;
-  
+
   try {
-    if(!fp){
+    if (!fp) {
       const dates = await DateModel.find({
         idespecialist: new mongoose.Types.ObjectId(id),
       }).populate("record");
-      
+
       res.status(200).json({ data: dates, status: true });
-    }else{
+    } else {
       const dates = await DateModel.find({
-        idespecialist: new mongoose.Types.ObjectId(id)  
-      }).populate("record")
-      .populate("idpatient");
-      
+        idespecialist: new mongoose.Types.ObjectId(id),
+      })
+        .populate("record")
+        .populate("idpatient");
+
       res.status(200).json({ data: dates, status: true });
     }
-   
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }
@@ -219,6 +223,40 @@ const deleteDate = async (req, res) => {
     });
     await DateModel.deleteOne({ _id: id });
 
+    const notifPatient =
+      "Tu cita con" +
+      date.idespecialist.firstname +
+      " " +
+      date.idespecialist.lastname +
+      " ha sido cancelada";
+
+    const notificationToPatient = {
+      title: notifPatient,
+      senderId: date.idespecialist._id,
+      receiverId: date.idpatient._id,
+      refId: date._id,
+    };
+    const notification = new Notification(notificationToPatient);
+    await notification.save();
+
+    const notifEspecialist =
+      "Tu cita con " +
+      date.idpatient.firstname +
+      " " +
+      date.idpatient.lastname +
+      " ha sido cancelada";
+
+    const notificationToEspecialist = {
+      title: notifEspecialist,
+      senderId: date.idespecialist._id,
+      receiverId: date.idespecialist._id,
+      refId: date._id,
+    };
+
+    const notificationB = new Notification(notificationToEspecialist);
+    await notificationB.save();
+    
+    supaNotif()
     res.status(200).json({ msg: "Cita cancelada exitosamente", status: true });
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
