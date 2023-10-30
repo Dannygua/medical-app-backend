@@ -5,6 +5,7 @@ import {
 } from "../helpers/emails.js";
 import { supaNotif } from "../index.js";
 import DateModel from "../models/Dates.js";
+import Notification from "../models/Notifications.js";
 import User from "../models/Users.js";
 import mongoose from "mongoose";
 
@@ -255,7 +256,7 @@ const deleteDate = async (req, res) => {
 
     const notificationB = new Notification(notificationToEspecialist);
     await notificationB.save();
-    
+
     supaNotif()
     res.status(200).json({ msg: "Cita cancelada exitosamente", status: true });
   } catch (error) {
