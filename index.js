@@ -86,14 +86,15 @@ export const supaNotif = () => {
 };
 
 const job = new CronJob(
-  //"*/5 * * * *	",
-  "* * * * * *",
+  "*/5 * * * *	",
+  //"* * * * * *",
   async function () {
     console.log(
       "Ha llegado el momento de verificar si una cita está próxima a llegar"
     );
     try {
       const ahora = new Date(); // Obtiene la hora actual
+      ahora.setSeconds(0, 0);
       console.log("ahora", ahora);
       /* Establece la hora de inicio del día actual (a las 00:00:00)
       const inicioDelDia = new Date(
@@ -118,8 +119,16 @@ const job = new CronJob(
       // const horaFutura = new Date(ahora.getTime() + (5 * 60 + 5) * 60000); // 5 horas y 5 minutos en milisegundos
       const horaFutura = new Date(ahora.getTime() + 5 * 60000); // 5 minutos en milisegundos
       console.log('hora futura', horaFutura)
+
+      const fechaObjetivo = new Date(ahora.getTime() + 5 * 60000);
+      fechaObjetivo.setSeconds(0, 0);
+      console.log('hora objetivio', fechaObjetivo)
+
       const comingDates = await DateModel.find({
-        start:  horaFutura.toISOString()
+        start: {
+          $gte: ahora.toISOString(),
+          $lte: fechaObjetivo.toISOString()
+        }
       })
         .populate("idpatient")
         .populate("idespecialist");
