@@ -79,6 +79,9 @@ const RecordSchema = mongoose.Schema(
       {
         url: {
           type: String,
+        },
+        name: {
+          type: String,
         }
       }
     ],
