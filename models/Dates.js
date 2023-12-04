@@ -50,6 +50,14 @@ const DateSchema = mongoose.Schema(
     callId: {
       type: String,
       default: ''
+    },
+    tipoAgenda:{
+      type: String,
+      trim: true
+    },
+    operationDescrip:{
+      type: String,
+      trim: true
     }
   },
 

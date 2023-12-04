@@ -100,6 +100,13 @@ const editRecords = async (req, res) => {
           req?.body?.generalInfo.ci || record.generalInfo.ci;
         record.generalInfo.civilState =
           req.body?.generalInfo?.civilState || record.generalInfo.civilState;
+        record.generalInfo.profession =
+        req.body?.generalInfo?.pr0fession || record.generalInfo.profession;
+        record.generalInfo.ocupation =
+          req.body?.generalInfo?.ocupation || record.generalInfo.ocupation;
+          record.generalInfo.referredBy =
+          req.body?.generalInfo?.referredBy || record.generalInfo.referredBy;
+
 
         record.contactInfo.address =
           req.body?.contactInfo?.address || record.contactInfo.address;
