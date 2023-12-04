@@ -103,6 +103,18 @@ const RecordSchema = mongoose.Schema(
         type: String,
         trim: true,
       },
+      ocupation: {
+        type: String,
+        trim: true,
+      },
+      profession: {
+        type: String,
+        trim: true,
+      },
+      referredBy: {
+        type: String,
+        trim: true,
+      },
     },
 
     contactInfo: {
