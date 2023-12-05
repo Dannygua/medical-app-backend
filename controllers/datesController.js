@@ -41,7 +41,7 @@ const createDate = async (req, res) => {
     console.log("existingDate", existingDate);
 
     if (existingDate) {
-      if (existingDate.idpatient !== existPatient[0]._id) {
+      if (existingDate.idpatient !== existPatient[0]._id || existingDate.idespecialist === idespecialist) {
         console.log("Ya existe una cita en ese horario.");
         res
           .status(400)

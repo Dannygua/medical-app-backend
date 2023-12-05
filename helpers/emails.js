@@ -3,7 +3,7 @@ import sendEmail from "../utils/sendEmail.js";
 
 export const testEmail = async (datos) => {
 
-  const { code } = datos; 
+  const { code } = datos;
 
   try {
     await sendEmail({
@@ -96,26 +96,46 @@ export const emailCredentialsSpecialists = async (datos) => {
 };
 
 export const emailDate = async (datos) => {
-  const { firstname, email, especialistemail, code } = datos;
+  const { firstname, email, especialistemail, code, date } = datos;
   console.log(email);
 
   try {
-    await sendEmail({
-      //the client email
-      to: [`${email}`, `${especialistemail}`],
-      //sendGrid sender id
-      from: "drbariatrico250@gmail.com",
-      subject: "¡Tienes una cita nueva!",
-      text: "Notificación de cita",
-      html: `<p> Te han asignado una cita con un especialista </p>
+    if (date.tipoAgenda === 'Cirugía') {
+      await sendEmail({
+        //the client email
+        to: [`${email}`, `${especialistemail}`],
+        //sendGrid sender id
+        from: "drbariatrico250@gmail.com",
+        subject: "¡Te han asignado una fecha para cirugía!",
+        text: "Notificación de cita",
+        html: `<p> Te han asignado una fecha para cirugía el ${date.start} </p>
+      <p> Recuerda asistir puntualmente y lee detenidamente las siguientes: instrucciones</p>
+      <p>${date.operationDescrip}</p>
+      <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
+      <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
+      <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
+      <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
+      `,
+        code
+      });
+    } else {
+      await sendEmail({
+        //the client email
+        to: [`${email}`, `${especialistemail}`],
+        //sendGrid sender id
+        from: "drbariatrico250@gmail.com",
+        subject: "¡Tienes una cita nueva!",
+        text: "Notificación de cita",
+        html: `<p> Te han asignado una cita con un especialista </p>
       <p> Recuerda asistir a tu cita puntualmente</p>
       <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
       <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
       <p>Si tu no solicitaste este servicio, puedes ignorar este email</p>
       `,
-      code
-    });
+        code
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -206,7 +226,7 @@ export const emailInfo = async (datos) => {
 
 export const emailWarning = async (datos) => {
   const { email, code } = datos;
-  
+
   try {
     await sendEmail({
       //the client email
