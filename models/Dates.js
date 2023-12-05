@@ -15,6 +15,14 @@ const DateSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    tipoAgenda:{
+      type: String,
+      trim: true
+    },
+    operationDescrip:{
+      type: String,
+      trim: true
+    },
     comments: {
       type: String,
       required: false,
@@ -51,14 +59,7 @@ const DateSchema = mongoose.Schema(
       type: String,
       default: ''
     },
-    tipoAgenda:{
-      type: String,
-      trim: true
-    },
-    operationDescrip:{
-      type: String,
-      trim: true
-    }
+    
   },
 
   {
