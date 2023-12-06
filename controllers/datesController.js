@@ -64,6 +64,7 @@ const createDate = async (req, res) => {
       email: existPatient[0].email,
       especialistemail: existEspecialist[0].email,
       code,
+      date: date
     });
 
     res.status(200).json({ msg: "Cita agendada correctamente", status: true });
