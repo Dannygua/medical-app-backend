@@ -47,27 +47,28 @@ const createDate = async (req, res) => {
           .status(400)
           .json({ msg: "Ya existe una cita en ese horario!", status: false });
       }
+    } else {
+
+      const date = new DateModel(req.body);
+      await date.save();
+
+      existPatient[0].dates.push(date._id);
+      await existPatient[0].save();
+
+      existEspecialist[0].dates.push(date._id);
+      existEspecialist[0].patients.push(idpatient);
+      await existEspecialist[0].save();
+
+      emailDate({
+        firstname: existPatient[0].firstname,
+        email: existPatient[0].email,
+        especialistemail: existEspecialist[0].email,
+        code,
+        date: date
+      });
+
+      res.status(200).json({ msg: "Cita agendada correctamente", status: true });
     }
-
-    const date = new DateModel(req.body);
-    await date.save();
-
-    existPatient[0].dates.push(date._id);
-    await existPatient[0].save();
-
-    existEspecialist[0].dates.push(date._id);
-    existEspecialist[0].patients.push(idpatient);
-    await existEspecialist[0].save();
-
-    emailDate({
-      firstname: existPatient[0].firstname,
-      email: existPatient[0].email,
-      especialistemail: existEspecialist[0].email,
-      code,
-      date: date
-    });
-
-    res.status(200).json({ msg: "Cita agendada correctamente", status: true });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ msg: error.message, status: false });
