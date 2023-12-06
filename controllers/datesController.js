@@ -67,7 +67,7 @@ const createDate = async (req, res) => {
         date: date
       });
 
-      res.status(200).json({ msg: "Cita agendada correctamente", status: true });
+      res.status(200).json({ msg: "Cita agendada correctamente", status: true, data: date });
     }
   } catch (error) {
     console.log(error.message);
