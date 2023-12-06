@@ -67,7 +67,13 @@ const createDate = async (req, res) => {
         date: date
       });
 
-      res.status(200).json({ msg: "Cita agendada correctamente", status: true, data: date });
+
+      const fullDate = await DateModel.findById(date._id)
+        .populate("record")
+        .populate("idespecialist")
+        .populate("idpatient");
+
+      res.status(200).json({ msg: "Cita agendada correctamente", status: true, data: fullDate });
     }
   } catch (error) {
     console.log(error.message);
