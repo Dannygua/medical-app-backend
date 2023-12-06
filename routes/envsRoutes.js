@@ -3,6 +3,6 @@ import { getSimulationUrl } from "../controllers/envsController.js";
 
 const router = express.Router();
 
-router.post("/", getSimulationUrl);
+router.get("/", getSimulationUrl);
 
 export default router;
