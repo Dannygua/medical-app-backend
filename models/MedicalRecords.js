@@ -86,6 +86,15 @@ const RecordSchema = mongoose.Schema(
       }
     ],
 
+    associatedTests: [
+      {
+        name: {
+          type: String,
+          trim: true,
+        }
+      },
+    ],
+
     generalInfo: {
       bornDate: {
         type: Date,
