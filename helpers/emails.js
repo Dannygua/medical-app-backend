@@ -111,6 +111,8 @@ export const emailDate = async (datos) => {
         html: `<p> Te han asignado una fecha para cirugía el ${date.start} </p>
       <p> Recuerda asistir puntualmente y lee detenidamente las siguientes: instrucciones</p>
       <p>${date.operationDescrip}</p>
+      <p> Ademas de tomar en cuenta estas observaciones:</p>
+      <p>${date.operationObs}</p>
       <p>Para poder ingresar al sistema debes hacerlo mediante tus credenciale de seguridad </p>
       <p> Puedes ingresar al sistema mediante el siguiente enlace </p>
       <a href="${process.env.FRONTEND_URL}">MEDICAL APP</a>
