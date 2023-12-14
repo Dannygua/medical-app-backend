@@ -23,6 +23,10 @@ const DateSchema = mongoose.Schema(
       type: String,
       trim: true
     },
+    operationObs:{
+      type: String,
+      trim: true
+    },
     comments: {
       type: String,
       required: false,
