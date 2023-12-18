@@ -26,6 +26,10 @@ const RecordSchema = mongoose.Schema(
       trim: true,
       default: false,
     },
+    esAptoOperation: {
+      type: Boolean,
+      trim: true,
+    },
     recipe: [
       {
         name: {
