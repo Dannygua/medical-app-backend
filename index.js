@@ -11,6 +11,7 @@ import simulationsRoutes from "./routes/simulationsRoutes.js";
 import testsRoutes from "./routes/testsRoutes.js"
 import envsRoutes from "./routes/envsRoutes.js"
 import operationRoutes from "./routes/operationRoutes.js"
+import meshRoutes from "./routes/meshRoutes.js"
 
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -66,6 +67,8 @@ app.use("/api/simulations", simulationsRoutes);
 app.use("/api/tests", testsRoutes);
 app.use("/api/envs", envsRoutes);
 app.use("/api/operationInd", operationRoutes);
+
+app.use("/api/mesh", meshRoutes);
 
 
 export const supaNotif = () => {
