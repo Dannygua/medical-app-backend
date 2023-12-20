@@ -1,9 +1,14 @@
 import express from "express";
-import checkAuth from "../middleware/checkAuth.js";
-import { createAvatar } from "../controllers/meshController.js";
+import { createAvatar, createImage, fitAvatar, getAvatar } from "../controllers/meshController.js";
 
 const router = express.Router();
 
-router.post("/", createAvatar);
+router.post("/createAvatar", createAvatar);
+
+router.post("/createImage", createImage);
+
+router.post("/fitAvatar", fitAvatar);
+
+router.get("/getAvatar", getAvatar);
 
 export default router;
