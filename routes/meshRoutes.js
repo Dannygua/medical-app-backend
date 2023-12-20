@@ -9,6 +9,6 @@ router.post("/createImage", createImage);
 
 router.post("/fitAvatar", fitAvatar);
 
-router.get("/getAvatar", getAvatar);
+router.post("/getAvatar", getAvatar);
 
 export default router;

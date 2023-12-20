@@ -78,7 +78,7 @@ const getAvatar = async (req, res) => {
 
     try {
         const url = req.body.url
-        
+
         const response = await axios.get(url, {
             headers:  {
                 // Añade cualquier encabezado adicional necesario
