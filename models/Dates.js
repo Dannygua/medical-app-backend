@@ -17,7 +17,8 @@ const DateSchema = mongoose.Schema(
     },
     tipoAgenda:{
       type: String,
-      trim: true
+      trim: true,
+      default: 'Cita General'
     },
     operationDescrip:{
       type: String,
