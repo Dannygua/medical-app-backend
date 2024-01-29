@@ -10,6 +10,7 @@ import {
   getLastMeasuresBy,
   storeCall,
   getDateById,
+  getDataToForm
 } from "../controllers/datesController.js";
 
 const router = express.Router();
@@ -23,4 +24,6 @@ router.post("/delete/:id", checkAuth, deleteDate)
 router.get("/lastMeasuresBy/:id",  checkAuth, getLastMeasuresBy)
 router.get('/storeCall', storeCall)
 router.get('/:id', checkAuth, getDateById)
+
+router.get('/dataToForm/:id', getDataToForm)
 export default router;

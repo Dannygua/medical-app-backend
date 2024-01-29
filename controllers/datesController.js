@@ -7,6 +7,8 @@ import { supaNotif } from "../index.js";
 import DateModel from "../models/Dates.js";
 import Notification from "../models/Notifications.js";
 import User from "../models/Users.js";
+import Record from "../models/MedicalRecords.js";
+
 import mongoose from "mongoose";
 
 const createDate = async (req, res) => {
@@ -350,6 +352,93 @@ const getDateById = async (req, res) => {
   }
 };
 
+
+
+const getDataToForm = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const dateExist = await DateModel.findOne({
+      _id: new mongoose.Types.ObjectId(id),
+    }).populate("record");
+    
+    if (!dateExist) {
+      const error = new Error("Cita no encontrado");
+      return res.status(401).json({ msg: error.message });
+    }
+
+
+    const result = {}
+    if('record' in dateExist){
+      console.log('hasa record')
+      if('generalInfo' in dateExist.record){
+        console.log('record has generalinfo')
+        result['generalInfo'] = dateExist.record.generalInfo
+      }else {
+        
+        const latestRecordWithGeneralInfo = await Record.findOne({
+          'generalInfo.bornDate': { $exists: true },
+          'generalInfo.bornPlace': { $exists: true },
+          'generalInfo.ci': { $exists: true },
+          'generalInfo.civilState': { $exists: true },
+          'generalInfo.ocupation': { $exists: true },
+          'generalInfo.profession': { $exists: true },
+          'generalInfo.referredBy': { $exists: true },
+          idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+        }).sort({ _id: -1 }).limit(1);
+
+        console.log('latest', latestRecordWithGeneralInfo)
+        
+        if(latestRecordWithGeneralInfo){
+          result['generalInfo'] = latestRecordWithGeneralInfo['generalInfo']
+        }
+        
+      }
+
+      if('contactInfo' in dateExist.record){
+        result['contactInfo'] = dateExist.record.contactInfo
+      }else{
+        const latestRecordWithContactInfo = await Record.findOne({
+          'contactInfo.address': { $exists: true },
+          'contactInfo.phone': { $exists: true },
+          idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+        }).sort({ _id: -1 }).limit(1);
+        if(latestRecordWithContactInfo){
+          result['contactInfo'] = latestRecordWithContactInfo['contactInfo']
+        }
+      }
+
+      
+      if('medicalInfo' in dateExist.record){
+        result['medicalInfo'] = dateExist.record.medicalInfo
+      }else{
+        const latestRecordWithMedicalInfo = await Record.findOne({
+          'medicalInfo.height': { $exists: true },
+          idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+        }).sort({ _id: -1 }).limit(1);
+        if(latestRecordWithMedicalInfo){
+          result['medicalInfo'] = latestRecordWithMedicalInfo['medicalInfo']
+        }
+      }
+      
+      if('nutriInfo' in dateExist.record){
+        result['nutriInfo'] = dateExist.record.nutriInfo
+      }else{
+        const latestRecordWithNutriInfo = await Record.findOne({
+          'nutriInfo.armsMeasurement': { $exists: true },
+          idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+        }).sort({ _id: -1 }).limit(1);
+        if(latestRecordWithNutriInfo){
+          result['nutriInfo'] = latestRecordWithNutriInfo['nutriInfo']
+        }
+      }
+    }
+
+    res.status(200).json({ data: result, status: true });
+  } catch (error) {
+    res.status(400).json({ msg: error.message, status: false });
+  }
+};
+
 const storeCall = async (req, res) => {
   console.log("haz algo !!!");
   // Recibe y procesa la notificación del webhook
@@ -375,4 +464,5 @@ export {
   getLastMeasuresBy,
   storeCall,
   getDateById,
+  getDataToForm
 };
