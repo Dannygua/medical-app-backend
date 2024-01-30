@@ -39,18 +39,65 @@ const createDate = async (req, res) => {
     // Verificar si ya existe una cita con la misma hora de inicio
     const existingDate = await DateModel.findOne({
       start: startInput.toISOString(),
+      idpatient: existPatient[0]._id,
+      idespecialist: existEspecialist[0]._id,
     });
     console.log("existingDate", existingDate);
 
     if (existingDate) {
-      if (existingDate.idpatient !== existPatient[0]._id || existingDate.idespecialist === idespecialist) {
-        console.log("Ya existe una cita en ese horario.");
+      /*console.log('existingDate', existingDate)
+
+      console.log('first', existingDate.idpatient !== existPatient[0]._id)
+
+      console.log('date idpatient', existingDate.idpatient)
+
+      console.log('patient in body', existPatient[0]._id)
+
+      console.log('second', existingDate.idespecialist === idespecialist)
+
+      
+      //Verificamos que la cita que coincide en hora es del mismo especialista
+      //Por ejemplo si pido una cita con el doctor 1 y el id de ese doctor es igual al id de la cita existente
+      console.log('requested specialist', existEspecialist[0]._id)
+      console.log('specialist id in existing date', existingDate.idespecialist)
+      if (existEspecialist[0]._id === existingDate.idespecialist) {
+        console.log('entra acá-0')
         res
           .status(400)
           .json({ msg: "Ya existe una cita en ese horario!", status: false });
+        return
       }
-    } else {
 
+      if (existPatient[0]._id === existingDate.idpatient) {
+        console.log('entra acá-1')
+        res
+          .status(400)
+          .json({ msg: "Ya existe una cita en ese horario!", status: false });
+        return
+      }
+
+      if (existingDate.idpatient !== existPatient[0]._id && existingDate.idespecialist === idespecialist) {
+        console.log('entra acá-2')
+        res
+          .status(400)
+          .json({ msg: "Ya existe una cita en ese horario!", status: false });
+        return
+      }
+
+
+      if (existingDate.idpatient === existPatient[0]._id && existingDate.idespecialist !== idespecialist) {
+        console.log('entra acá-3')
+        res
+          .status(400)
+          .json({ msg: "Ya existe una cita en ese horario!", status: false });
+        return
+      }
+      */
+      res
+        .status(400)
+        .json({ msg: "Ya existe una cita en ese horario!", status: false });
+
+    } else {
       const date = new DateModel(req.body);
       await date.save();
 
@@ -77,6 +124,9 @@ const createDate = async (req, res) => {
 
       res.status(200).json({ msg: "Cita agendada correctamente", status: true, data: fullDate });
     }
+
+
+
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ msg: error.message, status: false });
@@ -367,7 +417,7 @@ const getDataToForm = async (req, res) => {
     }
 
     const validation = { $exists: true, $ne: null, $ne: "" }
-      
+
     const result = {}
     console.log('dateExist', dateExist.record)
     if ('record' in dateExist && typeof dateExist.record !== "undefined") {
@@ -397,7 +447,7 @@ const getDataToForm = async (req, res) => {
       }
 
       if ('contactInfo' in dateExist.record && dateExist.record.contactInfo.phone !== null) {
-          result['contactInfo'] = dateExist.record.contactInfo
+        result['contactInfo'] = dateExist.record.contactInfo
       } else {
         const latestRecordWithContactInfo = await Record.findOne({
           'contactInfo.address': { $exists: true },
@@ -433,7 +483,7 @@ const getDataToForm = async (req, res) => {
           result['nutriInfo'] = latestRecordWithNutriInfo['nutriInfo']
         }
       }
-    }else {
+    } else {
       const latestRecordWithGeneralInfo = await Record.findOne({
         'generalInfo.bornDate': { $exists: true },
         'generalInfo.bornPlace': { $exists: true },
