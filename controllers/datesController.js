@@ -368,7 +368,8 @@ const getDataToForm = async (req, res) => {
 
 
     const result = {}
-    if ('record' in dateExist) {
+    console.log('dateExist', dateExist.record)
+    if ('record' in dateExist && typeof dateExist.record !== "undefined") {
       console.log('hasa record')
       if ('generalInfo' in dateExist.record && dateExist.record.generalInfo.bornDate !== null) {
         console.log('record has generalinfo', dateExist.record.generalInfo)
@@ -431,6 +432,53 @@ const getDataToForm = async (req, res) => {
           result['nutriInfo'] = latestRecordWithNutriInfo['nutriInfo']
         }
       }
+    }else {
+      const latestRecordWithGeneralInfo = await Record.findOne({
+        'generalInfo.bornDate': { $exists: true },
+        'generalInfo.bornPlace': { $exists: true },
+        'generalInfo.ci': { $exists: true },
+        'generalInfo.civilState': { $exists: true },
+        'generalInfo.ocupation': { $exists: true },
+        'generalInfo.profession': { $exists: true },
+        'generalInfo.referredBy': { $exists: true },
+        idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+      }).sort({ _id: -1 }).limit(1);
+
+      console.log('latest', latestRecordWithGeneralInfo)
+
+      if (latestRecordWithGeneralInfo) {
+        result['generalInfo'] = latestRecordWithGeneralInfo['generalInfo']
+      }
+
+
+      const latestRecordWithContactInfo = await Record.findOne({
+        'contactInfo.address': { $exists: true },
+        'contactInfo.phone': { $exists: true },
+        idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+      }).sort({ _id: -1 }).limit(1);
+      if (latestRecordWithContactInfo) {
+        result['contactInfo'] = latestRecordWithContactInfo['contactInfo']
+      }
+
+
+      const latestRecordWithMedicalInfo = await Record.findOne({
+        'medicalInfo.height': { $exists: true },
+        idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+      }).sort({ _id: -1 }).limit(1);
+      if (latestRecordWithMedicalInfo) {
+        result['medicalInfo'] = latestRecordWithMedicalInfo['medicalInfo']
+      }
+
+
+      const latestRecordWithNutriInfo = await Record.findOne({
+        'nutriInfo.armsMeasurement': { $exists: true },
+        idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
+      }).sort({ _id: -1 }).limit(1);
+      if (latestRecordWithNutriInfo) {
+        result['nutriInfo'] = latestRecordWithNutriInfo['nutriInfo']
+      }
+
+
     }
 
     res.status(200).json({ data: result, status: true });
