@@ -360,7 +360,7 @@ const getDataToForm = async (req, res) => {
     const dateExist = await DateModel.findOne({
       _id: new mongoose.Types.ObjectId(id),
     }).populate("record");
-    
+
     if (!dateExist) {
       const error = new Error("Cita no encontrado");
       return res.status(401).json({ msg: error.message });
@@ -368,13 +368,13 @@ const getDataToForm = async (req, res) => {
 
 
     const result = {}
-    if('record' in dateExist){
+    if ('record' in dateExist) {
       console.log('hasa record')
-      if('generalInfo' in dateExist.record){
-        console.log('record has generalinfo')
+      if ('generalInfo' in dateExist.record && dateExist.record.generalInfo.bornDate !== null) {
+        console.log('record has generalinfo', dateExist.record.generalInfo)
         result['generalInfo'] = dateExist.record.generalInfo
-      }else {
-        
+      } else {
+
         const latestRecordWithGeneralInfo = await Record.findOne({
           'generalInfo.bornDate': { $exists: true },
           'generalInfo.bornPlace': { $exists: true },
@@ -387,47 +387,47 @@ const getDataToForm = async (req, res) => {
         }).sort({ _id: -1 }).limit(1);
 
         console.log('latest', latestRecordWithGeneralInfo)
-        
-        if(latestRecordWithGeneralInfo){
+
+        if (latestRecordWithGeneralInfo) {
           result['generalInfo'] = latestRecordWithGeneralInfo['generalInfo']
         }
-        
+
       }
 
-      if('contactInfo' in dateExist.record){
-        result['contactInfo'] = dateExist.record.contactInfo
-      }else{
+      if ('contactInfo' in dateExist.record && dateExist.record.contactInfo.phone !== null) {
+          result['contactInfo'] = dateExist.record.contactInfo
+      } else {
         const latestRecordWithContactInfo = await Record.findOne({
           'contactInfo.address': { $exists: true },
           'contactInfo.phone': { $exists: true },
           idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
         }).sort({ _id: -1 }).limit(1);
-        if(latestRecordWithContactInfo){
+        if (latestRecordWithContactInfo) {
           result['contactInfo'] = latestRecordWithContactInfo['contactInfo']
         }
       }
 
-      
-      if('medicalInfo' in dateExist.record){
+
+      if ('medicalInfo' in dateExist.record) {
         result['medicalInfo'] = dateExist.record.medicalInfo
-      }else{
+      } else {
         const latestRecordWithMedicalInfo = await Record.findOne({
           'medicalInfo.height': { $exists: true },
           idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
         }).sort({ _id: -1 }).limit(1);
-        if(latestRecordWithMedicalInfo){
+        if (latestRecordWithMedicalInfo) {
           result['medicalInfo'] = latestRecordWithMedicalInfo['medicalInfo']
         }
       }
-      
-      if('nutriInfo' in dateExist.record){
+
+      if ('nutriInfo' in dateExist.record) {
         result['nutriInfo'] = dateExist.record.nutriInfo
-      }else{
+      } else {
         const latestRecordWithNutriInfo = await Record.findOne({
           'nutriInfo.armsMeasurement': { $exists: true },
           idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
         }).sort({ _id: -1 }).limit(1);
-        if(latestRecordWithNutriInfo){
+        if (latestRecordWithNutriInfo) {
           result['nutriInfo'] = latestRecordWithNutriInfo['nutriInfo']
         }
       }
