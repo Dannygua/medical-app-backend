@@ -37,66 +37,72 @@ const createDate = async (req, res) => {
     const startInput = new Date(req.body.start);
     console.log("startInput", startInput);
     // Verificar si ya existe una cita con la misma hora de inicio
-    const existingDate = await DateModel.findOne({
+    const existingDates = await DateModel.find({
       start: startInput.toISOString(),
-      idpatient: existPatient[0]._id,
-      idespecialist: existEspecialist[0]._id,
+      /*$or: [
+        {
+          idpatient: existPatient[0]._id,
+          idespecialist: { $ne: existEspecialist[0]._id },  
+        },
+        {
+          idpatient: { $ne: existPatient[0]._id },
+          idespecialist: existEspecialist[0]._id,   
+        }
+      ],*/
     });
-    console.log("existingDate", existingDate);
+    //console.log("existingDate", existingDates);
 
-    if (existingDate) {
-      /*console.log('existingDate', existingDate)
+    if (existingDates.length > 0) {
 
-      console.log('first', existingDate.idpatient !== existPatient[0]._id)
+      const filtered = existingDates.filter((existingDate) => {
+        
+        if(existingDate.idpatient.toString() === existPatient[0]._id.toString() && existingDate.idespecialist.toString() === existEspecialist[0]._id.toString()){
+          return existingDate
+        }  
+        
+        if(existingDate.idpatient.toString() === existPatient[0]._id.toString() && existingDate.idespecialist.toString() !== existEspecialist[0]._id.toString()){
+          return existingDate
+        }
 
-      console.log('date idpatient', existingDate.idpatient)
+        if(existingDate.idpatient.toString() !== existPatient[0]._id.toString() && existingDate.idespecialist.toString() === existEspecialist[0]._id.toString()){
+          return existingDate
+        }
+      })
 
-      console.log('patient in body', existPatient[0]._id)
+      console.log('filtered', filtered)
 
-      console.log('second', existingDate.idespecialist === idespecialist)
-
-      
-      //Verificamos que la cita que coincide en hora es del mismo especialista
-      //Por ejemplo si pido una cita con el doctor 1 y el id de ese doctor es igual al id de la cita existente
-      console.log('requested specialist', existEspecialist[0]._id)
-      console.log('specialist id in existing date', existingDate.idespecialist)
-      if (existEspecialist[0]._id === existingDate.idespecialist) {
-        console.log('entra acá-0')
+      if(filtered.length > 0){
         res
-          .status(400)
-          .json({ msg: "Ya existe una cita en ese horario!", status: false });
-        return
-      }
-
-      if (existPatient[0]._id === existingDate.idpatient) {
-        console.log('entra acá-1')
-        res
-          .status(400)
-          .json({ msg: "Ya existe una cita en ese horario!", status: false });
-        return
-      }
-
-      if (existingDate.idpatient !== existPatient[0]._id && existingDate.idespecialist === idespecialist) {
-        console.log('entra acá-2')
-        res
-          .status(400)
-          .json({ msg: "Ya existe una cita en ese horario!", status: false });
-        return
-      }
-
-
-      if (existingDate.idpatient === existPatient[0]._id && existingDate.idespecialist !== idespecialist) {
-        console.log('entra acá-3')
-        res
-          .status(400)
-          .json({ msg: "Ya existe una cita en ese horario!", status: false });
-        return
-      }
-      */
-      res
         .status(400)
-        .json({ msg: "Ya existe una cita en ese horario!", status: false });
-
+        .json({ msg: "Ya existe una cita en ese horario!", status: false });  
+      }else{
+        const date = new DateModel(req.body);
+        await date.save();
+  
+        existPatient[0].dates.push(date._id);
+        await existPatient[0].save();
+  
+        existEspecialist[0].dates.push(date._id);
+        existEspecialist[0].patients.push(idpatient);
+        await existEspecialist[0].save();
+  
+        emailDate({
+          firstname: existPatient[0].firstname,
+          email: existPatient[0].email,
+          especialistemail: existEspecialist[0].email,
+          code,
+          date: date
+        });
+  
+  
+        const fullDate = await DateModel.findById(date._id)
+          .populate("record")
+          .populate("idespecialist")
+          .populate("idpatient");
+  
+        res.status(200).json({ msg: "Cita agendada correctamente", status: true, data: fullDate });
+      }
+      
     } else {
       const date = new DateModel(req.body);
       await date.save();
