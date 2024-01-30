@@ -366,7 +366,8 @@ const getDataToForm = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
-
+    const validation = { $exists: true, $ne: null, $ne: "" }
+      
     const result = {}
     console.log('dateExist', dateExist.record)
     if ('record' in dateExist && typeof dateExist.record !== "undefined") {
@@ -413,7 +414,7 @@ const getDataToForm = async (req, res) => {
         result['medicalInfo'] = dateExist.record.medicalInfo
       } else {
         const latestRecordWithMedicalInfo = await Record.findOne({
-          'medicalInfo.height': { $exists: true },
+          'medicalInfo.height': validation,
           idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
         }).sort({ _id: -1 }).limit(1);
         if (latestRecordWithMedicalInfo) {
@@ -425,7 +426,7 @@ const getDataToForm = async (req, res) => {
         result['nutriInfo'] = dateExist.record.nutriInfo
       } else {
         const latestRecordWithNutriInfo = await Record.findOne({
-          'nutriInfo.armsMeasurement': { $exists: true },
+          'nutriInfo.armsMeasurement': validation,
           idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
         }).sort({ _id: -1 }).limit(1);
         if (latestRecordWithNutriInfo) {
@@ -462,7 +463,7 @@ const getDataToForm = async (req, res) => {
 
 
       const latestRecordWithMedicalInfo = await Record.findOne({
-        'medicalInfo.height': { $exists: true },
+        'medicalInfo.height': validation,
         idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
       }).sort({ _id: -1 }).limit(1);
       if (latestRecordWithMedicalInfo) {
@@ -471,7 +472,7 @@ const getDataToForm = async (req, res) => {
 
 
       const latestRecordWithNutriInfo = await Record.findOne({
-        'nutriInfo.armsMeasurement': { $exists: true },
+        'nutriInfo.armsMeasurement': validation,
         idpatient: new mongoose.Types.ObjectId(dateExist.idpatient)
       }).sort({ _id: -1 }).limit(1);
       if (latestRecordWithNutriInfo) {
