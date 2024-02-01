@@ -427,6 +427,9 @@ const getDataToForm = async (req, res) => {
     const result = {}
     console.log('dateExist', dateExist.record)
     if ('record' in dateExist && typeof dateExist.record !== "undefined") {
+
+      result['record'] = dateExist.record   
+
       console.log('hasa record')
       if ('generalInfo' in dateExist.record && dateExist.record.generalInfo.bornDate !== null) {
         console.log('record has generalinfo', dateExist.record.generalInfo)
