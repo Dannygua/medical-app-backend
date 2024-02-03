@@ -1,11 +1,13 @@
 import DateModel from "../models/Dates.js";
 import Record from "../models/MedicalRecords.js";
 import User from "../models/Users.js";
+import GeneralInfo from "../models/GeneralInfo.js";
 import {
   DeleteUniqueImage,
   uploadImages,
   uploadMultipleImages,
 } from "../utils/uploadImage.js";
+import ContactInfo from "../models/ContactInfo.js";
 
 const createRecord = async (req, res) => {
   const { idpatient, idespecialist, iddate, Test, testResults } = req.body;
@@ -58,6 +60,58 @@ const createRecord = async (req, res) => {
     existDate[0].record = record._id;
     await existDate[0].save();
 
+    const existsGeneralInfo = await GeneralInfo.findOne({
+      idpatient: idpatient
+    })
+
+
+    if (existsGeneralInfo) {
+      existsGeneralInfo.bornDate =
+        req.body?.generalInfo?.bornDate || existsGeneralInfo.bornDate;
+      existsGeneralInfo.bornPlace =
+        req.body?.generalInfo?.bornPlace || existsGeneralInfo.bornPlace;
+      existsGeneralInfo.ci =
+        req?.body?.generalInfo.ci || existsGeneralInfo.ci;
+      existsGeneralInfo.civilState =
+        req.body?.generalInfo?.civilState || existsGeneralInfo.civilState;
+      existsGeneralInfo.profession =
+        req.body?.generalInfo?.pr0fession || existsGeneralInfo.profession;
+      existsGeneralInfo.ocupation =
+        req.body?.generalInfo?.ocupation || existsGeneralInfo.ocupation;
+      existsGeneralInfo.referredBy =
+        req.body?.generalInfo?.referredBy || existsGeneralInfo.referredBy;
+
+      await existsGeneralInfo.save()
+    } else {
+      const generalInfo = new GeneralInfo({
+        ...req.body.generalInfo,
+        idpatient: idpatient
+      })
+      await generalInfo.save()
+    }
+
+    const existsContactInfo = await ContactInfo.findOne({
+      idpatient: record.idpatient
+    })
+
+
+    if (existsContactInfo) {
+   
+      existsContactInfo.address = req.body?.contactInfo?.address || existsContactInfo.address,
+      existsContactInfo.phone = req.body?.contactInfo?.phone || existsContactInfo.phone,
+      await existsContactInfo.save()
+
+    } else {
+      const data = {
+        ...req.body.contactInfo,
+        idpatient: record.idpatient
+      }
+      console.log('data', data)
+      const contactInfo = new ContactInfo(data)
+      await contactInfo.save()
+    }
+
+
     res
       .status(200)
       .json({ msg: "Registro Medico creado Correctamente", status: true });
@@ -101,10 +155,10 @@ const editRecords = async (req, res) => {
         record.generalInfo.civilState =
           req.body?.generalInfo?.civilState || record.generalInfo.civilState;
         record.generalInfo.profession =
-        req.body?.generalInfo?.pr0fession || record.generalInfo.profession;
+          req.body?.generalInfo?.pr0fession || record.generalInfo.profession;
         record.generalInfo.ocupation =
           req.body?.generalInfo?.ocupation || record.generalInfo.ocupation;
-          record.generalInfo.referredBy =
+        record.generalInfo.referredBy =
           req.body?.generalInfo?.referredBy || record.generalInfo.referredBy;
 
 
@@ -143,7 +197,7 @@ const editRecords = async (req, res) => {
         record.care = req.body.care || record.care;
         record.medicalInfo.comments =
           req.body?.medicalInfo?.comments || record.medicalInfo.comments;
-        
+
         record.nutriInfo.neckMeasurement =
           req.body?.nutriInfo?.neckMeasurement ||
           record.nutriInfo.neckMeasurement;
@@ -169,7 +223,6 @@ const editRecords = async (req, res) => {
       }
 
       if (user.isNutri) {
-        console.log('REQ', req )
         record.nutriInfo.neckMeasurement =
           req.body?.nutriInfo?.neckMeasurement ||
           record.nutriInfo.neckMeasurement;
@@ -236,6 +289,53 @@ const editRecords = async (req, res) => {
 
 
       await record.save();
+
+      const existsGeneralInfo = await GeneralInfo.findOne({
+        idpatient: record.idpatient
+      })
+
+  
+      if (existsGeneralInfo) {
+     
+        existsGeneralInfo.bornDate= req.body?.generalInfo?.bornDate || existsGeneralInfo.bornDate,
+        existsGeneralInfo.bornPlace= req.body?.generalInfo?.bornPlace || existsGeneralInfo.bornPlace,
+        existsGeneralInfo.ci= req?.body?.generalInfo.ci || existsGeneralInfo.ci,
+        existsGeneralInfo.civilState= req.body?.generalInfo?.civilState || existsGeneralInfo.civilState,
+        existsGeneralInfo.profession= req.body?.generalInfo?.profession || existsGeneralInfo.profession,
+        existsGeneralInfo.ocupation= req.body?.generalInfo?.ocupation || existsGeneralInfo.ocupation,
+        existsGeneralInfo.referredBy= req.body?.generalInfo?.referredBy || existsGeneralInfo.referredBy
+        
+        await existsGeneralInfo.save()
+      } else {
+        const data = {
+          ...req.body.generalInfo,
+          idpatient: record.idpatient
+        }
+        const generalInfo = new GeneralInfo(data)
+        await generalInfo.save()
+      }
+
+
+      const existsContactInfo = await ContactInfo.findOne({
+        idpatient: record.idpatient
+      })
+
+  
+      if (existsContactInfo) {
+     
+        existsContactInfo.address = req.body?.contactInfo?.address || existsContactInfo.address,
+        existsContactInfo.phone = req.body?.contactInfo?.phone || existsContactInfo.phone,
+        await existsContactInfo.save()
+
+      } else {
+        const data = {
+          ...req.body.contactInfo,
+          idpatient: record.idpatient
+        }
+        console.log('data', data)
+        const contactInfo = new ContactInfo(data)
+        await contactInfo.save()
+      }
 
       res.status(200).json({ msg: record, status: true });
     } else {

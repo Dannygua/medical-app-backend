@@ -333,7 +333,6 @@ const getPatients = async (req, res) => {
       },
     });
     res.status(200).json({ data: patients, status: true });
-    console.log(patients);
   } catch (error) {
     res.status(400).json({ msg: error.message, status: false });
   }

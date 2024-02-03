@@ -12,6 +12,7 @@ import testsRoutes from "./routes/testsRoutes.js"
 import envsRoutes from "./routes/envsRoutes.js"
 import operationRoutes from "./routes/operationRoutes.js"
 import meshRoutes from "./routes/meshRoutes.js"
+import infoRoutes from "./routes/infoRoutes.js"
 
 import cors from "cors";
 import bodyParser from "body-parser";
@@ -70,6 +71,8 @@ app.use("/api/operationInd", operationRoutes);
 
 app.use("/api/mesh", meshRoutes);
 
+app.use("/api/info", infoRoutes)
+
 
 export const supaNotif = () => {
   // SUPABASE INTEGRATION
@@ -92,6 +95,7 @@ export const supaNotif = () => {
   });
   // END SUPABASE INTEGRATION
 };
+
 
 const job = new CronJob(
   "*/5 * * * *	",
