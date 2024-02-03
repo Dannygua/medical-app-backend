@@ -137,7 +137,7 @@ const editRecords = async (req, res) => {
 
     let finalTr = record.testResults
     if (req.body.testResults && Array.isArray(req.body.testResults) && req.body.testResults.length > 0) {
-      finalTr = req.body.testResults
+      finalTr = [...record.testResults, ...req.body.testResults] 
     }
     
     if (record.idespecialist.toString() == user._id.toString()) {
