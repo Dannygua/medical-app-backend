@@ -74,13 +74,14 @@ const createRecord = async (req, res) => {
         req?.body?.generalInfo.ci || existsGeneralInfo.ci;
       existsGeneralInfo.civilState =
         req.body?.generalInfo?.civilState || existsGeneralInfo.civilState;
-      existsGeneralInfo.profession =
-        req.body?.generalInfo?.pr0fession || existsGeneralInfo.profession;
+      
+        existsGeneralInfo.profession =
+        req.body?.generalInfo?.profession || "";
       existsGeneralInfo.ocupation =
-        req.body?.generalInfo?.ocupation || existsGeneralInfo.ocupation;
+        req.body?.generalInfo?.ocupation || "";
       existsGeneralInfo.referredBy =
-        req.body?.generalInfo?.referredBy || existsGeneralInfo.referredBy;
-
+        req.body?.generalInfo?.referredBy || "";
+      
       await existsGeneralInfo.save()
     } else {
       const generalInfo = new GeneralInfo({
@@ -97,8 +98,8 @@ const createRecord = async (req, res) => {
 
     if (existsContactInfo) {
    
-      existsContactInfo.address = req.body?.contactInfo?.address || existsContactInfo.address,
-      existsContactInfo.phone = req.body?.contactInfo?.phone || existsContactInfo.phone,
+      existsContactInfo.address = req.body?.contactInfo?.address || "",
+      existsContactInfo.phone = req.body?.contactInfo?.phone || "",
       await existsContactInfo.save()
 
     } else {
@@ -301,9 +302,9 @@ const editRecords = async (req, res) => {
         existsGeneralInfo.bornPlace= req.body?.generalInfo?.bornPlace || existsGeneralInfo.bornPlace,
         existsGeneralInfo.ci= req?.body?.generalInfo.ci || existsGeneralInfo.ci,
         existsGeneralInfo.civilState= req.body?.generalInfo?.civilState || existsGeneralInfo.civilState,
-        existsGeneralInfo.profession= req.body?.generalInfo?.profession || existsGeneralInfo.profession,
-        existsGeneralInfo.ocupation= req.body?.generalInfo?.ocupation || existsGeneralInfo.ocupation,
-        existsGeneralInfo.referredBy= req.body?.generalInfo?.referredBy || existsGeneralInfo.referredBy
+        existsGeneralInfo.profession= req.body?.generalInfo?.profession || "",
+        existsGeneralInfo.ocupation= req.body?.generalInfo?.ocupation || "",
+        existsGeneralInfo.referredBy= req.body?.generalInfo?.referredBy || ""
         
         await existsGeneralInfo.save()
       } else {
@@ -323,8 +324,8 @@ const editRecords = async (req, res) => {
   
       if (existsContactInfo) {
      
-        existsContactInfo.address = req.body?.contactInfo?.address || existsContactInfo.address,
-        existsContactInfo.phone = req.body?.contactInfo?.phone || existsContactInfo.phone,
+        existsContactInfo.address = req.body?.contactInfo?.address || "",
+        existsContactInfo.phone = req.body?.contactInfo?.phone || "",
         await existsContactInfo.save()
 
       } else {
