@@ -189,7 +189,7 @@ const editRecords = async (req, res) => {
           req.body?.medicalInfo?.emergency || record.medicalInfo.emergency;
         record.recipe = req.body?.recipe || record.recipe;
         record.Test = req.body.Test || record.Test;
-        record.testResults = req.body.testResults || record.testResults
+        record.testResults = finalTr
         record.care = req.body.care || record.care;
         record.medicalInfo.comments =
           req.body?.medicalInfo?.comments || record.medicalInfo.comments;
