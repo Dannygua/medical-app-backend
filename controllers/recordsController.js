@@ -134,17 +134,12 @@ const editRecords = async (req, res) => {
       return res.status(401).json({ msg: error.message });
     }
 
-    /*
-    if (record.Test && record.Test.length > 0) {
-      for (let i = 0; i < record.Test.length; i++) {
-        record.Test[i]?.resultPhoto.map(async (file) => {
-          const arr = file.split(/[./]/);
-          await DeleteUniqueImage(arr[9]);
-        });
-      }
-    }
-    */
 
+    let finalTr = record.testResults
+    if (req.body.testResults && Array.isArray(req.body.testResults) && req.body.testResults.length > 0) {
+      finalTr = req.body.testResults
+    }
+    
     if (record.idespecialist.toString() == user._id.toString()) {
       if (user.isDoctor) {
         record.generalInfo.bornDate =
