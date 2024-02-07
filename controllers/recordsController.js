@@ -147,7 +147,7 @@ const editRecords = async (req, res) => {
         record.generalInfo.bornPlace =
           req.body?.generalInfo?.bornPlace || record.generalInfo.bornPlace;
         record.generalInfo.ci =
-          req?.body?.generalInfo.ci || record.generalInfo.ci;
+          req?.body?.generalInfo?.ci || record.generalInfo.ci;
         record.generalInfo.civilState =
           req.body?.generalInfo?.civilState || record.generalInfo.civilState;
         record.generalInfo.profession =
