@@ -296,7 +296,7 @@ const editRecords = async (req, res) => {
      
         existsGeneralInfo.bornDate= req.body?.generalInfo?.bornDate || existsGeneralInfo.bornDate,
         existsGeneralInfo.bornPlace= req.body?.generalInfo?.bornPlace || existsGeneralInfo.bornPlace,
-        existsGeneralInfo.ci= req?.body?.generalInfo.ci || existsGeneralInfo.ci,
+        existsGeneralInfo.ci= req?.body?.generalInfo?.ci || existsGeneralInfo.ci,
         existsGeneralInfo.civilState= req.body?.generalInfo?.civilState || existsGeneralInfo.civilState,
         existsGeneralInfo.profession= req.body?.generalInfo?.profession || "",
         existsGeneralInfo.ocupation= req.body?.generalInfo?.ocupation || "",
