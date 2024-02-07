@@ -1,6 +1,6 @@
 
 const getSimulationUrl = async (req, res) => {
-    res.json({ simulationApiUrl: 'https://1d4c-2800-bf0-284-121-891d-ec87-28be-bc6.ngrok-free.app' });   
+    res.json({ simulationApiUrl: 'https://49c4-2800-bf0-284-121-a446-586d-e5be-dc5c.ngrok-free.app' });   
 }
 
 export {
