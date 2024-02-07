@@ -71,7 +71,7 @@ const createRecord = async (req, res) => {
       existsGeneralInfo.bornPlace =
         req.body?.generalInfo?.bornPlace || existsGeneralInfo.bornPlace;
       existsGeneralInfo.ci =
-        req?.body?.generalInfo.ci || existsGeneralInfo.ci;
+        req?.body?.generalInfo?.ci || existsGeneralInfo.ci;
       existsGeneralInfo.civilState =
         req.body?.generalInfo?.civilState || existsGeneralInfo.civilState;
       
